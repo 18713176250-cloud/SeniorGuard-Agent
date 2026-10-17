@@ -1,0 +1,15 @@
+# ===== 银龄数字卫士 · Python 依赖清单 =====
+# 其他成员克隆项目后执行：pip install -r requirements.txt
+# --- OpenDev API 调用（任务 1-4）---
+openai
+# --- 读取 .env 配置 ---
+python-dotenv
+# --- AnySearch MCP 客户端（任务 1-5）---
+requests
+# --- OCR 拍照/截图文字提取（任务 1-6）---
+paddleocr
+paddlepaddle
+# 截图 OCR（仅 --clipboard 时用，如不需截图可删除）
+pillow
+# --- TTS 语音播报（任务 2-4，仅 --tts 时用）---
+edge-tts
