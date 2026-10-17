@@ -1,0 +1,10 @@
+# 本地密钥/配置（含 OpenDev Key）
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
