@@ -50,7 +50,7 @@ python backend/scripts/verify_opendev.py
 # 预期：返回 {"is_scam": true, ...} 结构化 JSON
 
 # AnySearch 检索（1-5）
-python backend/scripts/test_anysearch.py
+python backend/scripts/verify_anysearch.py
 # 预期：检索成功 3/3
 
 # OCR 文字提取（1-6）

@@ -1,9 +1,10 @@
 """Agent ① 输入 Agent：接收图片/文本，输出清洗后的纯文本。
 
 - 文本：直接清洗
-- 图片：PaddleOCR 提取文字（惰性导入，不用 OCR 时无需安装）
+- 图片：RapidOCR 提取文字（惰性导入，不用 OCR 时无需安装）
 """
 import re
+import sys
 from pathlib import Path
 
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".bmp", ".webp"}
@@ -13,20 +14,25 @@ _ocr = None
 def _get_ocr():
     global _ocr
     if _ocr is None:
-        from paddleocr import PaddleOCR  # 惰性导入
+        from rapidocr_onnxruntime import RapidOCR  # 惰性导入
 
-        _ocr = PaddleOCR(use_angle_cls=True, lang="ch")
+        _ocr = RapidOCR()
     return _ocr
 
 
 def ocr_image(image_path: str) -> list[str]:
-    result = _get_ocr().ocr(image_path, cls=True)
-    return [
-        line[1][0].strip()
-        for page in (result or [])
-        for line in (page or [])
-        if line[1][0].strip()
+    import numpy as np
+    from PIL import Image
+
+    img = Image.open(image_path).convert("RGB")
+    result, _ = _get_ocr()(np.array(img))
+    rows = [
+        text.strip()
+        for _box, text, _score in (result or [])
+        if text and text.strip()
     ]
+    print(f"[input_agent] OCR 识别完成：{len(rows)} 行文字", file=sys.stderr)
+    return rows
 
 
 def clean_text(text: str) -> str:

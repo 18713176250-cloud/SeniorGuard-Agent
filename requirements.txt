@@ -7,8 +7,7 @@ python-dotenv
 # --- AnySearch MCP 客户端（任务 1-5）---
 requests
 # --- OCR 拍照/截图文字提取（任务 1-6）---
-paddleocr
-paddlepaddle
+rapidocr-onnxruntime
 # 截图 OCR（仅 --clipboard 时用，如不需截图可删除）
 pillow
 # --- TTS 语音播报（任务 2-4，仅 --tts 时用）---

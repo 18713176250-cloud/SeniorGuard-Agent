@@ -5,7 +5,11 @@
 运行：python build_kb.py
 """
 import os
+import sys
 from anysearch_client import AnySearch
+
+# Windows 控制台默认 GBK，强制 UTF-8 以便输出中文和符号
+sys.stdout.reconfigure(encoding="utf-8")
 
 # 创建知识库目录
 KB_DIR = "knowledge_base"
@@ -41,13 +45,16 @@ def main():
     # 步骤2：用 extract 抓取每个 URL 全文，存为 Markdown
     print(f"\n=== 步骤 2: 用 extract 抓取 {len(urls)} 个页面 ===")
     saved = 0
-    for i, url in enumerate(list(urls)[:8]):  # 控制数量，避免过度调用
+    for i, url in enumerate(sorted(urls)):
+        if saved >= 8:  # 控制数量，避免过度调用
+            break
         try:
             text = client.extract(url)
-            fname = os.path.join(KB_DIR, f"kb_{i:02d}.md")
+            # 按成功数量编号，抓取失败不会留下编号空洞
+            fname = os.path.join(KB_DIR, f"kb_{saved:02d}.md")
             with open(fname, "w", encoding="utf-8") as f:
                 f.write(f"# 来源: {url}\n\n{text}")
-            print(f"  ✅ [{i}] {url} → {len(text)} 字符")
+            print(f"  ✅ [{saved}] {url} → {len(text)} 字符")
             saved += 1
         except Exception as e:
             print(f"  ❌ [{i}] {url} → {e}")

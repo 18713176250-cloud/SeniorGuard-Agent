@@ -1,6 +1,6 @@
 """验证 AnySearch 检索：为小型反诈知识库检索素材。
 
-运行：python test_anysearch.py
+运行：python verify_anysearch.py
 """
 import sys
 

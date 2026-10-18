@@ -1,0 +1,525 @@
+{
+  "summary": {
+    "诈骗召回率(判为诈骗)": "12/12 = 100%",
+    "诈骗预警率(诈骗+存疑)": "12/12 = 100%",
+    "诈骗精确率": "12/12 = 100%",
+    "误伤率(正常被判诈骗)": "0/10 = 0%",
+    "正常样本被标存疑": "0/10 = 0%",
+    "权威对照·诈骗样本判矛盾": "5/12 = 42%",
+    "权威对照·正常样本未判矛盾": "9/10 = 90%",
+    "转人工复核比例(全部)": "19/25 = 76%"
+  },
+  "rows": [
+    {
+      "id": "S01",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "伪权威",
+        "虚假疗效",
+        "幸存者偏差",
+        "恐惧营销",
+        "限时逼单"
+      ],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定",
+        "矛盾",
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "该内容同时具备冒用国家机关背书、宣称根治慢病、伪造康复人数和限时逼单等多重典型诈骗特征，建议老人切勿购买、切勿擅自停药，并及时告知家人。"
+    },
+    {
+      "id": "S02",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "伪权威",
+        "恐惧营销",
+        "虚假疗效",
+        "限时逼单"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "无法判定",
+        "矛盾",
+        "矛盾",
+        "无法判定"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "该内容用虚构专家和瘫痪恐吓开场，宣称保健品可清除血栓并取代手术用药，再以名额限时逼单，是典型的伪健康诈骗话术，建议老人不要购买并带相关宣传材料向正规医院医生或家人核实。"
+    },
+    {
+      "id": "S03",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "虚假疗效",
+        "伪权威",
+        "幸存者偏差",
+        "限时逼单",
+        "恐惧营销"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "无法判定",
+        "矛盾",
+        "无法判定"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "普通床垫宣称治愈癌症并以免费体检逼单，是典型的伪健康虚假疗效骗局，建议老人不要下单并告知家属。"
+    },
+    {
+      "id": "S04",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "伪权威",
+        "虚假疗效",
+        "虚假疗效",
+        "限时逼单",
+        "恐惧营销"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "无法判定",
+        "无法判定",
+        "矛盾",
+        "矛盾",
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "同时具备伪造院士权威、宣称包治多种重病、诱导停药和先款后货等典型特征，属于高风险保健品诈骗，切勿打款、切勿自行停药。"
+    },
+    {
+      "id": "S05",
+      "label": "scam",
+      "category": "公检法",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "冒充公检法",
+        "恐惧营销",
+        "限时逼单",
+        "情感绑架"
+      ],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定",
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "冒充公安制造恐慌、索要转账并要求保密，是典型「安全账户」类诈骗，建议立即挂断并拨打110或家人核实。"
+    },
+    {
+      "id": "S06",
+      "label": "scam",
+      "category": "公检法",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "冒充公检法",
+        "恐惧营销",
+        "伪权威",
+        "限时逼单"
+      ],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定",
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "冒充法院以涉嫌犯罪恐吓，诱导扫码装APP并索要银行卡号和验证码，是典型冒充公检法骗局，切勿操作，可拨打12368或到当地法院核实。"
+    },
+    {
+      "id": "S07",
+      "label": "scam",
+      "category": "冒充亲友",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "冒充亲属（冒充身份类）",
+        "情感绑架",
+        "恐惧营销",
+        "限时逼单"
+      ],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定",
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "典型冒充子女换号求助型骗局，建议老人立刻用原号码或其他家人联系本人核实，先不要转账。"
+    },
+    {
+      "id": "S08",
+      "label": "scam",
+      "category": "投资",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "伪权威",
+        "虚假投资",
+        "限时逼单",
+        "恐惧营销",
+        "情感绑架"
+      ],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定",
+        "无法判定",
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "同时出现超高收益承诺、违法的保本保息话术、限时逼单和直接索要转账，是典型的养老理财诈骗，建议不转账、不入群并向家人或96110核实。"
+    },
+    {
+      "id": "S09",
+      "label": "scam",
+      "category": "中奖",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "虚假中奖/投资",
+        "限时逼单",
+        "伪权威"
+      ],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定",
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "典型中奖类诈骗：先用高额奖品诱导，再索要手续费与身份证、银行卡号，属于骗钱加骗取个人金融信息，建议不回复、不转账并向家人或96110核实。"
+    },
+    {
+      "id": "S10",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "虚假疗效",
+        "伪权威",
+        "恐惧营销",
+        "情感绑架",
+        "限时逼单"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "矛盾",
+        "无法判定"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "该内容集中使用虚假疗效、伪权威与情感恐惧施压，属典型伪健康带货话术，建议老年人不转发、不购买，并由人工复核后进行辟谣提示。"
+    },
+    {
+      "id": "S11",
+      "label": "scam",
+      "category": "客服",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "伪权威",
+        "虚假中奖/投资",
+        "恐惧营销"
+      ],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "冒充平台客服以退款为由索要屏幕共享权限，是典型的远程操控盗取银行卡和验证码的诈骗套路，正规平台退款只在官方App内原路退回，绝不需要屏幕共享。"
+    },
+    {
+      "id": "S12",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "伪权威",
+        "虚假疗效",
+        "情感绑架",
+        "限时逼单"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "以免费赠品引流的典型会销套路，叠加伪专家背书、夸大疗效和亲情施压，建议老人不去、不听、不买，并告知子女。"
+    },
+    {
+      "id": "N01",
+      "label": "normal",
+      "category": "健康科普",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "识别为正常，但权威对照发现矛盾，二者冲突"
+      ],
+      "reason": "内容为常规高血压用药与饮食科普，强调遵医嘱、不自行停药，无任何推销、恐吓或夸大疗效成分。"
+    },
+    {
+      "id": "N02",
+      "label": "normal",
+      "category": "健康科普",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "内容为通用运动健康科普，无夸大疗效、无逼单引流、无身份冒充，且强调热身与量力而行，符合正规养生建议特征。"
+    },
+    {
+      "id": "N03",
+      "label": "normal",
+      "category": "反诈提醒",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "内容为反诈科普提醒，提示挂断可疑电话并拨打官方咨询号码，未索要转账、个人信息或制造限时压力，属正常官方宣传口径。"
+    },
+    {
+      "id": "N04",
+      "label": "normal",
+      "category": "健康科普",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "内容强调遵医嘱、规范用药与定期监测，并明确承认疾病无法根治，与常见骗术特征相反，属正规健康科普。"
+    },
+    {
+      "id": "N05",
+      "label": "normal",
+      "category": "日常通知",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "内容为社区常规健康服务通知，明确「自愿参加，无需缴费」，无收费、无疗效承诺、无催促逼单，不构成诈骗。"
+    },
+    {
+      "id": "N06",
+      "label": "normal",
+      "category": "养生建议",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "与官方信息一致",
+      "judgements": [
+        "一致"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "内容为常见秋季生活起居建议，无夸大疗效、无推销和催促成分，属正常养生科普。"
+    },
+    {
+      "id": "N07",
+      "label": "normal",
+      "category": "银行通知",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "内容为标准银行账户变动通知，引导拨打官方客服并明确声明不索要密码或验证码，未出现任何诱导点击、转账或索取信息的行为，符合正规短信特征。"
+    },
+    {
+      "id": "N08",
+      "label": "normal",
+      "category": "健康科普",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "一致",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "内容为官方口径的保健食品消费提示，明确声明保健食品不能代替药物并指引官网核验，无夸大疗效或逼单成分。"
+    },
+    {
+      "id": "N09",
+      "label": "normal",
+      "category": "日常通知",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "普通家人日常问候与关心用药，无任何诈骗或伪健康诱导要素。"
+    },
+    {
+      "id": "N10",
+      "label": "normal",
+      "category": "养生建议",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "内容为冬季老人洗澡的常规安全提示，无夸大疗效、无推销或催促，属正常养生建议。"
+    },
+    {
+      "id": "B01",
+      "label": "borderline",
+      "category": "边界",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "表述为常规保健食品宣传，用词克制且主动标注「不能代替药物」，未见夸大疗效或逼单话术。"
+    },
+    {
+      "id": "B02",
+      "label": "borderline",
+      "category": "边界",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "内容只是朋友推荐针灸治肩周炎并询问是否值得，无夸大疗效、无逼单、无权威包装，属于正常咨询。"
+    },
+    {
+      "id": "B03",
+      "label": "borderline",
+      "category": "边界",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "普通超市促销通知，优惠幅度合理、无诱导转账或索取个人信息，属正常商业宣传。"
+    }
+  ]
+}
