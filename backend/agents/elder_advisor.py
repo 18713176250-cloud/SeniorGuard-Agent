@@ -1,5 +1,6 @@
 """Agent ④ 银龄解读：把结论转成老人能听懂的白话，并可选 TTS 语音播报。"""
 import asyncio
+import sys
 
 from agents.llm import chat_json
 
@@ -28,9 +29,25 @@ def run(text: str, detection: dict, authority: dict) -> dict:
     return out
 
 
-def speak(script: str, out_path: str = "advice.mp3", voice: str = "zh-CN-XiaoxiaoNeural") -> str:
-    """TTS 播报，生成 mp3。需要 `pip install edge-tts`（联网）。"""
+# 微软免费 TTS 接口时好时坏：按顺序换音色重试，每次限时，避免请求卡死
+VOICES = ("zh-CN-YunxiNeural", "zh-CN-XiaoxiaoNeural", "zh-CN-XiaoyiNeural", "zh-CN-YunjianNeural")
+TTS_TIMEOUT = 20  # 秒
+
+
+def speak(script: str, out_path: str = "advice.mp3", voices: tuple = VOICES) -> str:
+    """TTS 播报，生成 mp3。需要 `pip install edge-tts`（联网）。全部音色都失败时抛出最后一个错误。"""
     import edge_tts
 
-    asyncio.run(edge_tts.Communicate(script, voice, rate="-10%").save(out_path))
-    return out_path
+    async def _try(voice):
+        await asyncio.wait_for(edge_tts.Communicate(script, voice, rate="-10%").save(out_path), TTS_TIMEOUT)
+
+    last_err = None
+    for voice in voices:
+        try:
+            asyncio.run(_try(voice))
+            print(f"[elder_advisor] 语音合成成功（{voice}）", file=sys.stderr)
+            return out_path
+        except Exception as e:  # noqa: BLE001
+            last_err = e
+            print(f"[elder_advisor] 音色 {voice} 失败: {type(e).__name__}", file=sys.stderr)
+    raise RuntimeError(f"语音合成失败: {last_err!r}")

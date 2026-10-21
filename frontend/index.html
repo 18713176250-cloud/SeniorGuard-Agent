@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>银龄数字卫士 · 帮您辨别骗局</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<a class="skip" href="#main">跳到主要内容</a>
+<header>
+  <h1>银龄数字卫士</h1>
+  <p>收到可疑的短信、宣传单？贴进来或拍张照，帮您看看是不是骗局。</p>
+</header>
+
+<main id="main">
+  <section class="card" aria-labelledby="in-title">
+    <h2 id="in-title">第一步：把内容给我</h2>
+    <form id="form" novalidate>
+      <div class="tabs" role="tablist" aria-label="输入方式">
+        <button type="button" role="tab" id="tab-text" aria-selected="true" aria-controls="panel-text">粘贴文字</button>
+        <button type="button" role="tab" id="tab-image" aria-selected="false" aria-controls="panel-image" tabindex="-1">上传图片 / 拍照</button>
+      </div>
+
+      <div id="panel-text" role="tabpanel" aria-labelledby="tab-text">
+        <label for="text">短信或宣传内容</label>
+        <textarea id="text" name="text" rows="6" maxlength="2000"
+          placeholder="例如：国家药监局特批，包治百病，买三送三，抓紧抢购！"></textarea>
+        <p class="hint"><span id="count">0</span> / 2000 字</p>
+      </div>
+
+      <div id="panel-image" role="tabpanel" aria-labelledby="tab-image" hidden>
+        <label for="image">选择图片（支持 png / jpg / webp，8MB 以内）</label>
+        <input id="image" name="image" type="file" accept="image/png,image/jpeg,image/bmp,image/webp" capture="environment">
+        <img id="preview" alt="已选图片预览" hidden>
+      </div>
+
+      <label class="check"><input type="checkbox" id="live"> 同时联网查最新官方信息（更慢）</label>
+
+      <button type="submit" id="submit" class="primary">帮我看看</button>
+      <p id="error" class="error" role="alert"></p>
+    </form>
+  </section>
+
+  <div id="loading" class="card loading" hidden aria-live="polite">
+    <span class="spinner" aria-hidden="true"></span>
+    <p>正在帮您核查，大约需要 30 秒到 1 分钟，请稍等……</p>
+  </div>
+
+  <section id="result" class="card" hidden aria-labelledby="verdict-title" tabindex="-1">
+    <div id="verdict" class="verdict">
+      <h2 id="verdict-title"></h2>
+      <p id="risk"></p>
+    </div>
+
+    <div class="block">
+      <h3>给您的提醒</h3>
+      <p id="script" class="script"></p>
+      <ul id="tips" class="tips"></ul>
+      <button type="button" id="speak" class="secondary">🔊 读给我听</button>
+      <audio id="audio" controls hidden></audio>
+    </div>
+
+    <details class="block">
+      <summary>识别出的骗人手法</summary>
+      <ul id="tactics" class="list"></ul>
+    </details>
+
+    <details class="block">
+      <summary>和官方信息对照</summary>
+      <p id="overall"></p>
+      <ul id="authority" class="list"></ul>
+    </details>
+
+    <details class="block" id="ocr-block" hidden>
+      <summary>从图片里认出的文字</summary>
+      <pre id="ocr"></pre>
+    </details>
+
+    <p id="review" class="review"></p>
+    <p class="disclaimer" id="disclaimer"></p>
+    <p class="hotline">拿不准？拨打全国反诈专线 <a href="tel:96110">96110</a>，或问问子女。</p>
+  </section>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

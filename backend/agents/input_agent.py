@@ -43,10 +43,10 @@ def clean_text(text: str) -> str:
     return text.strip()
 
 
-def run(source: str) -> dict:
-    """source 可以是图片路径或直接粘贴的文本。"""
+def run(source: str, force_text: bool = False) -> dict:
+    """source 可以是图片路径或直接粘贴的文本。force_text=True 时一律按文字处理（Web 入口用，防止把文字当本地路径读取）。"""
     p = Path(source)
-    is_image = len(source) < 260 and p.suffix.lower() in IMAGE_EXTS and p.exists()
+    is_image = not force_text and len(source) < 260 and p.suffix.lower() in IMAGE_EXTS and p.exists()
     if is_image:
         text = clean_text("\n".join(ocr_image(str(p))))
         kind = "image"

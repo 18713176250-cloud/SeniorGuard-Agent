@@ -15,8 +15,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))  # 让 config / agents 
 from agents import authority_checker, elder_advisor, input_agent, review_agent, scam_detector  # noqa: E402
 
 
-def analyze(source: str, use_live: bool = False, enqueue_review: bool = True) -> dict:
-    inp = input_agent.run(source)
+def analyze(source: str, use_live: bool = False, enqueue_review: bool = True, force_text: bool = False) -> dict:
+    inp = input_agent.run(source, force_text=force_text)
     detection = scam_detector.run(inp["text"])
     authority = authority_checker.run(inp["text"], detection, use_live=use_live)
     review = review_agent.run(inp["text"], detection, authority, enqueue=enqueue_review)

@@ -10,5 +10,9 @@ requests
 rapidocr-onnxruntime
 # 截图 OCR（仅 --clipboard 时用，如不需截图可删除）
 pillow
-# --- TTS 语音播报（任务 2-4，仅 --tts 时用）---
-edge-tts
+# --- TTS 语音播报（任务 2-4）。7.0.0 会被微软接口 403 拒绝，需 >=7.3.1 ---
+edge-tts==7.3.1
+# --- Web 接口 + 前端托管（backend/server.py）---
+fastapi==0.115.6
+uvicorn==0.34.0
+python-multipart==0.0.20
