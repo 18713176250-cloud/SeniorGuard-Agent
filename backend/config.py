@@ -19,6 +19,11 @@ OPENDEV_MODEL = os.getenv("OPENDEV_MODEL", "claude-opus-5")
 ANYSEARCH_MCP_URL = os.getenv("ANYSEARCH_MCP_URL", "https://api.anysearch.com/mcp")
 ANYSEARCH_API_KEY = os.getenv("ANYSEARCH_API_KEY")
 
+# ===== 星云数字人（可选，前端播报用；不填则页面不显示数字人按钮）=====
+XINGYUN_APP_ID = os.getenv("XINGYUN_APP_ID", "").strip()
+XINGYUN_APP_SECRET = os.getenv("XINGYUN_APP_SECRET", "").strip()
+XINGYUN_GATEWAY = os.getenv("XINGYUN_GATEWAY", "https://nebula-agent.xingyun3d.com/user/v1/ttsa_v2/session")
+
 # 校验：缺失 Key 时给出明确提示
 if not OPENDEV_API_KEY:
     raise RuntimeError("未找到 OPENDEV_API_KEY，请在 .env 中配置。")

@@ -17,11 +17,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "backend"))
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile  # noqa: E402
-from fastapi.responses import FileResponse, Response  # noqa: E402
+from fastapi.responses import FileResponse, JSONResponse, Response  # noqa: E402
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 from pydantic import BaseModel, Field  # noqa: E402
 
 from agents import elder_advisor  # noqa: E402
+from config import XINGYUN_APP_ID, XINGYUN_APP_SECRET, XINGYUN_GATEWAY  # noqa: E402
 from agents.input_agent import IMAGE_EXTS  # noqa: E402
 from main import analyze  # noqa: E402
 
@@ -95,6 +96,23 @@ def tts_api(req: TTSReq):
         raise HTTPException(502, "语音生成失败，请检查网络") from e
     finally:
         Path(tmp).unlink(missing_ok=True)
+
+
+@app.get("/api/avatar-config")
+def avatar_config():
+    """星云数字人配置。
+
+    ⚠️ 星云 Web SDK 要求在浏览器里传 appSecret，所以这里会把 Secret 下发给页面。
+       本服务只监听 127.0.0.1，仅本机可见；如果对外部署，访问者都能拿到 Secret，
+       需先向星云确认是否支持服务端签发临时令牌，或改用演示专用应用并限额。
+    """
+    headers = {"Cache-Control": "no-store"}
+    if not (XINGYUN_APP_ID and XINGYUN_APP_SECRET):
+        return JSONResponse({"enabled": False}, headers=headers)
+    return JSONResponse(
+        {"enabled": True, "appId": XINGYUN_APP_ID, "appSecret": XINGYUN_APP_SECRET, "gatewayServer": XINGYUN_GATEWAY},
+        headers=headers,
+    )
 
 
 FRONTEND = ROOT / "frontend"

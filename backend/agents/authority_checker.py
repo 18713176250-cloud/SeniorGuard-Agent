@@ -78,7 +78,7 @@ def _df():
 _df_cache = None
 
 
-def retrieve(query: str, top_k: int = 4) -> list[dict]:
+def retrieve(query: str, top_k: int = 8) -> list[dict]:
     import math
 
     q = {g for g in _bigrams(query) if g not in _STOP and not (g[0] in _STOP and g[1] in _STOP)}
