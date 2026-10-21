@@ -10,3 +10,9 @@ __pycache__/
 venv/
 # 人工复核队列（含用户提交内容，不入库）
 review_queue.jsonl
+
+# 编辑器索引 / 本地工具目录
+.merkle-snapshot.json
+.codeartsdoer/
+# 命令行跑出来的单次结果（可能含真实输入）
+/result.json

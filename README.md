@@ -90,6 +90,12 @@ python backend/server.py
 
 命令行用法仍可用：python backend/main.py "要检测的文字" [--live] [--tts]
 
+前端播报逻辑测试（模拟 DOM 和星云 SDK，不需要浏览器、不耗额度）：
+
+node tests/frontend_player.test.js
+
+真机排查：浏览器 F12 控制台里，每句话开始/结束会打印「[数字人] 语音 start/end」。如果频繁出现「没收到「讲完」回调，按计时进入下一句」，说明 SDK 回调没接上，句子之间会有明显停顿。
+
 6. 量化评测
 
 python backend/scripts/eval_testset.py                    # 25 条带标签样本，结果写入 testset/eval_result.json
@@ -124,6 +130,7 @@ python backend/scripts/eval_testset.py --out testset/x.json
 
 - 评测 v6 有 3 条样本（S04、S12、N01）因接口断连未跑出结果；它们在 v4 全量里分别判对，v6 的 100% 基于 22 条，样本量小，不代表线上准确率。
 - 模型接口今天断连较多。已给客户端设 120 秒超时（之前无超时，单条曾卡住 1 小时以上），并改为 3s→6s 退避重试；演示前建议先跑一遍样本确认接口通畅。
+- 网页请求：每次模型调用最多试 2 次（环境变量 WEB_LLM_RETRIES 可改，评测脚本仍是 3 次）；前端 3 分钟没结果自动取消并提示「再点一次」（勾选联网查时 5 分钟），等待超过 1 分钟时遮罩会显示已等待秒数。前端取消后，后端那次分析仍会跑完并消耗额度。
 - 数字人「继续」按句续播：暂停后从当前这句的开头重讲，不是从半句接上（SDK 无暂停续播接口）。
 - 星云 appSecret 会下发到浏览器，仅限本机演示，见上文接口说明。
 
@@ -140,6 +147,7 @@ silver-guardian/
 │   ├── main.py        # 主流程 analyze() + 命令行入口
 │   ├── scripts/       # 验证脚本（verify_opendev / anysearch / build_kb / verify_ocr）
 │   └── config.py      # 统一读 .env
+├── tests/             # 前端播报逻辑测试（node 直接跑）
 ├── testset/           # 带标签测试集 + 评测结果
 └── frontend/          # 适老化网页（index.html / style.css / app.js）
 

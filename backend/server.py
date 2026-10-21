@@ -21,10 +21,13 @@ from fastapi.responses import FileResponse, JSONResponse, Response  # noqa: E402
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 from pydantic import BaseModel, Field  # noqa: E402
 
-from agents import elder_advisor  # noqa: E402
+from agents import elder_advisor, llm  # noqa: E402
 from config import XINGYUN_APP_ID, XINGYUN_APP_SECRET, XINGYUN_GATEWAY  # noqa: E402
 from agents.input_agent import IMAGE_EXTS  # noqa: E402
 from main import analyze  # noqa: E402
+
+# 网页请求：每次模型调用最多试 2 次（评测脚本仍是 3 次）。前端 3 分钟没结果会自动取消并提示重试。
+llm.DEFAULT_RETRIES = int(os.getenv("WEB_LLM_RETRIES", "2"))
 
 MAX_TEXT = 2000           # 单次文字上限（字），防止超长输入耗额度
 MAX_IMAGE = 8 * 1024 * 1024  # 图片上限 8MB

@@ -106,6 +106,7 @@ function initAgent() {
       },
       // 每段话开始 / 结束时回调，用来实现「暂停后接着讲」
       onVoiceStateChange(state) {
+        console.info("[数字人] 语音", state, `第 ${player.idx + 1}/${player.chunks.length} 句`);
         if (state === "start") onChunkStart();
         else if (state === "end") onChunkEnd();
       },
@@ -179,7 +180,10 @@ function speakCurrentChunk() {
   player.started = false;
   agent.speak(chunk, true, true);
   // 兜底：万一没收到 end 回调，按字数估算时长后自动讲下一句，避免卡住
-  player.timer = setTimeout(onChunkEnd.bind(null, true), chunk.length * 400 + 10000);
+  player.timer = setTimeout(() => {
+    console.warn("[数字人] 没收到「讲完」回调，按计时进入下一句。如果经常出现，说明 SDK 回调没接上");
+    onChunkEnd(true);
+  }, chunk.length * 400 + 10000);
 }
 
 function onChunkStart() {
@@ -433,6 +437,37 @@ $("image").addEventListener("change", (e) => {
   }
 });
 
+// ---------- 核查请求：超时自动取消，遮罩上显示已等待时间 ----------
+// 3 分钟；勾选「联网查」时更慢，放宽到 5 分钟。后端单次模型调用超时 120s、最多试 2 次。
+// 注意：前端取消只是不再等，后端那次分析仍会跑完（会照常消耗额度）。
+const ANALYZE_TIMEOUT_MS = 180 * 1000;
+const ANALYZE_TIMEOUT_LIVE_MS = 300 * 1000;
+
+async function fetchAnalyze(fd) {
+  const ctrl = new AbortController();
+  const limit = fd.get("live") === "true" ? ANALYZE_TIMEOUT_LIVE_MS : ANALYZE_TIMEOUT_MS;
+  const timer = setTimeout(() => ctrl.abort(), limit);
+  const t0 = Date.now();
+  const base = $("overlay-text").textContent;
+  const tick = setInterval(() => {
+    const sec = Math.round((Date.now() - t0) / 1000);
+    // 超过 1 分钟时告诉老人还在查，避免以为卡死了
+    $("overlay-text").textContent = sec < 60 ? base : `还在帮您核查，已经等了 ${sec} 秒，网络有点慢，请再稍等……`;
+  }, 1000);
+  try {
+    const resp = await fetch("/api/analyze", { method: "POST", body: fd, signal: ctrl.signal });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok) throw new Error(data.detail || "检测失败，请稍后再试");
+    return data;
+  } catch (err) {
+    if (err.name === "AbortError") throw new Error("网络不太稳定，这次没查完。请再点一次「帮我看看」。");
+    throw err;
+  } finally {
+    clearTimeout(timer);
+    clearInterval(tick);
+  }
+}
+
 // ---------- 提交分析：右侧遮罩 + 并行准备数字人，结果出来后播报 ----------
 $("form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -464,9 +499,7 @@ $("form").addEventListener("submit", async (e) => {
   }
 
   try {
-    const resp = await fetch("/api/analyze", { method: "POST", body: fd });
-    const data = await resp.json().catch(() => ({}));
-    if (!resp.ok) throw new Error(data.detail || "检测失败，请稍后再试");
+    const data = await fetchAnalyze(fd);
 
     render(data);
     stopAllSpeech();
@@ -479,6 +512,8 @@ $("form").addEventListener("submit", async (e) => {
     stopAllSpeech();
     hideOverlay();
     setView("home");
+    $("submit").disabled = false; // 禁用状态的按钮拿不到焦点，先恢复再聚焦
+    $("submit").focus(); // 图片模式下文字框是隐藏的，统一把焦点放回提交按钮
   } finally {
     $("submit").disabled = false;
   }

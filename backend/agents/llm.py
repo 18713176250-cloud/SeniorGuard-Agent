@@ -6,6 +6,9 @@ import time
 from config import OPENDEV_MODEL, get_opendev_client
 
 _client = None
+# 每次调用最多试几次。评测脚本用默认 3 次；网页服务启动时改成 2 次，
+# 避免接口断连时老人在页面上干等（单次超时 120s，一条分析要调 3 次模型）。
+DEFAULT_RETRIES = 3
 
 # 模型偶尔会在字符串值里输出未转义的英文双引号，导致 JSON 解析失败
 JSON_RULE = "\n\n【格式铁律】JSON 字符串值内部禁止出现英文双引号 \"，需要引用时一律用中文引号「」。"
@@ -29,9 +32,11 @@ def parse_json(content: str | None) -> dict:
     return out
 
 
-def chat_json(system: str, user: str, max_retries: int = 3, temperature: float = 0.1) -> dict:
+def chat_json(system: str, user: str, max_retries: int | None = None, temperature: float = 0.1) -> dict:
     """调用 OpenDev，强制返回 JSON dict。5xx/解析失败时重试。"""
     global _client
+    if max_retries is None:
+        max_retries = DEFAULT_RETRIES
     if _client is None:
         _client = get_opendev_client()
     last_err = None
