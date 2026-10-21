@@ -75,6 +75,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0, help="只跑前 N 条（按 scam/normal 交替取样）")
     ap.add_argument("--live", action="store_true")
+    ap.add_argument("--ids", default="", help="只跑指定样本，逗号分隔，如 S07,N01")
+    ap.add_argument("--out", default="", help="明细输出路径（默认 testset/eval_result.json）")
     args = ap.parse_args()
 
     samples = [json.loads(l) for l in SAMPLES.read_text(encoding="utf-8").splitlines() if l.strip()]
@@ -82,6 +84,9 @@ def main():
         scam = [s for s in samples if s["label"] == "scam"]
         normal = [s for s in samples if s["label"] == "normal"]
         samples = [x for pair in zip(scam, normal) for x in pair][: args.limit]
+    if args.ids:
+        want = {x.strip() for x in args.ids.split(",") if x.strip()}
+        samples = [s for s in samples if s["id"] in want]
 
     rows = []
     for i, s in enumerate(samples, 1):
@@ -109,8 +114,9 @@ def main():
         if r["label"] == "borderline":
             print(f"{r['id']}: 判定={r['verdict']} 风险={r['risk_level']} 复核={r['needs_human_review']} | {r['reason']}")
 
-    OUT.write_text(json.dumps({"summary": summary, "rows": rows}, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"\n明细已写入 {OUT}")
+    out = Path(args.out) if args.out else OUT
+    out.write_text(json.dumps({"summary": summary, "rows": rows}, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"\n明细已写入 {out}")
 
 
 if __name__ == "__main__":

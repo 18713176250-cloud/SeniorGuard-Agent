@@ -1,0 +1,102 @@
+{
+  "summary": {
+    "诈骗召回率(判为诈骗)": "2/2 = 100%",
+    "诈骗预警率(诈骗+存疑)": "2/2 = 100%",
+    "诈骗精确率": "2/2 = 100%",
+    "误伤率(正常被判诈骗)": "0/1 = 0%",
+    "正常样本被标存疑": "0/1 = 0%",
+    "权威对照·诈骗样本判矛盾": "2/2 = 100%",
+    "权威对照·正常样本未判矛盾": "1/1 = 100%",
+    "转人工复核比例(全部)": "0/3 = 0%"
+  },
+  "rows": [
+    {
+      "id": "S03",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "虚假疗效",
+        "幸存者偏差",
+        "伪权威",
+        "限时逼单"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "矛盾",
+        "矛盾",
+        "矛盾"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "以无法核实的单个康复案例和医院名义为普通床垫编造抗癌疗效，再用免费体检催促老人立即下单，是典型的保健品诈骗话术。"
+    },
+    {
+      "id": "S04",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Connection error.",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "S05",
+      "label": "scam",
+      "category": "公检法",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "冒充公检法",
+        "恐惧营销",
+        "限时逼单",
+        "情感绑架"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "矛盾",
+        "矛盾",
+        "矛盾"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "典型冒充公检法骗局：假警察+假案件+安全账户转账+要求保密，四项特征齐全，切勿转账，立即挂断并拨打110或告知家人。"
+    },
+    {
+      "id": "S12",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Connection error.",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "N01",
+      "label": "normal",
+      "category": "健康科普",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Expecting value: line 1 column 1 (char 0)",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "N02",
+      "label": "normal",
+      "category": "健康科普",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "与官方信息一致",
+      "judgements": [
+        "一致"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "内容为通用运动健康建议，强调热身与量力而行，无夸大疗效、无收费或转账要求，属正常科普。"
+    }
+  ]
+}

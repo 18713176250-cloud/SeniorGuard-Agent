@@ -1,0 +1,150 @@
+{
+  "summary": {
+    "诈骗召回率(判为诈骗)": "2/2 = 100%",
+    "诈骗预警率(诈骗+存疑)": "2/2 = 100%",
+    "诈骗精确率": "2/2 = 100%",
+    "误伤率(正常被判诈骗)": "0/4 = 0%",
+    "正常样本被标存疑": "0/4 = 0%",
+    "权威对照·诈骗样本判矛盾": "2/2 = 100%",
+    "权威对照·正常样本未判矛盾": "4/4 = 100%",
+    "转人工复核比例(全部)": "2/6 = 33%"
+  },
+  "rows": [
+    {
+      "id": "S02",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Connection error.",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "S06",
+      "label": "scam",
+      "category": "公检法",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "冒充公检法",
+        "恐惧营销",
+        "限时逼单"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "矛盾",
+        "矛盾"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "冒充法院以涉嫌犯罪恐吓，诱导扫码下载假APP并索取银行卡号和验证码，是典型的冒充公检法诈骗。"
+    },
+    {
+      "id": "S07",
+      "label": "scam",
+      "category": "冒充亲友",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "情感绑架",
+        "伪权威",
+        "恐惧营销",
+        "限时逼单",
+        "情感绑架"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "矛盾",
+        "矛盾",
+        "矛盾"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "冒充子女换号、编造车祸急需转账并要求对家人保密，是典型的冒充亲属诈骗话术。"
+    },
+    {
+      "id": "S12",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Connection error.",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "N01",
+      "label": "normal",
+      "category": "健康科普",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Connection error.",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "N02",
+      "label": "normal",
+      "category": "健康科普",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "与官方信息一致",
+      "judgements": [
+        "一致"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "内容为常规运动健康建议，强调热身与量力而行，无夸大疗效、无催促交费或转账等诈骗特征。"
+    },
+    {
+      "id": "N05",
+      "label": "normal",
+      "category": "日常通知",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "内容为社区免费体检通知，明确写有「自愿参加，无需缴费」，无收费、无催促、无夸大疗效，符合正常公共服务通知特征。"
+    },
+    {
+      "id": "N09",
+      "label": "normal",
+      "category": "日常通知",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "与官方信息一致",
+      "judgements": [
+        "一致"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "普通家人关心问候，无转账要求、无夸大疗效、无紧迫逼迫，未见诈骗特征。"
+    },
+    {
+      "id": "N10",
+      "label": "normal",
+      "category": "养生建议",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "内容为冬季老人洗澡安全的常规生活提示，无夸大疗效、无身份冒充、无转账或购买诉求，属正常养生科普。"
+    }
+  ]
+}

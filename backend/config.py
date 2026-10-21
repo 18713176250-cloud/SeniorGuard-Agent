@@ -33,7 +33,14 @@ if not ANYSEARCH_API_KEY:
 
 def get_opendev_client() -> OpenAI:
     """OpenDev 客户端（Agent ② 骗术识别 / Agent ④ 银龄解读）"""
-    return OpenAI(api_key=OPENDEV_API_KEY, base_url=OPENDEV_BASE_URL)
+    # 不设 timeout 时 SDK 默认等 600s，且自带 2 次重试；上游断连时单条样本会卡上一小时。
+    # 这里设 120s 超时、关掉 SDK 自带重试，统一由 llm.chat_json 负责重试和退避。
+    return OpenAI(
+        api_key=OPENDEV_API_KEY,
+        base_url=OPENDEV_BASE_URL,
+        timeout=120.0,
+        max_retries=0,
+    )
 
 
 def get_anysearch():

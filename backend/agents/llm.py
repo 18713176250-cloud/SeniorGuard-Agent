@@ -51,5 +51,5 @@ def chat_json(system: str, user: str, max_retries: int = 3, temperature: float =
         except Exception as e:  # noqa: BLE001
             last_err = e
             if attempt < max_retries:
-                time.sleep(3)
+                time.sleep(3 * 2 ** (attempt - 1))  # 3s → 6s 退避，给上游恢复时间
     raise RuntimeError(f"{OPENDEV_MODEL} 重试{max_retries}次仍失败: {last_err}")

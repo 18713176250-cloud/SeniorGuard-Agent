@@ -13,104 +13,113 @@
 </header>
 
 <main id="main">
-  <!-- 视图1：输入 -->
-  <section id="view-input" class="view" aria-labelledby="in-title">
-    <form id="form" novalidate>
-      <h2 id="in-title" class="form-title">把内容给我</h2>
-      <div class="tabs" role="tablist" aria-label="输入方式">
-        <button type="button" role="tab" id="tab-text" aria-selected="true" aria-controls="panel-text">粘贴文字</button>
-        <button type="button" role="tab" id="tab-image" aria-selected="false" aria-controls="panel-image" tabindex="-1">上传图片 / 拍照</button>
+  <div class="layout">
+    <!-- 左侧：常驻数字人（首页 / 核查中 / 结果页共用一个会话） -->
+    <aside class="left-panel" aria-label="数字人">
+      <div id="avatar-stage" class="avatar-stage">
+        <div id="agent-avatar" role="img" aria-label="数字人画面"></div>
+        <button type="button" id="avatar-placeholder" class="avatar-placeholder">
+          <span class="ph-icon" aria-hidden="true">🛡️</span>
+          <span>点我，听我说一句</span>
+        </button>
       </div>
-
-      <div id="panel-text" role="tabpanel" aria-labelledby="tab-text">
-        <label for="text">短信或宣传内容</label>
-        <textarea id="text" name="text" rows="4" maxlength="2000"
-          placeholder="例如：国家药监局特批，包治百病，买三送三，抓紧抢购！"></textarea>
-        <p class="hint"><span id="count">0</span> / 2000 字</p>
+      <p id="avatar-status" class="hint avatar-status" aria-live="polite"></p>
+      <div class="avatar-controls">
+        <button type="button" id="toggle-play" class="icon-btn" hidden title="暂停" aria-label="暂停播报">⏸</button>
+        <button type="button" id="replay-avatar" class="icon-btn" hidden title="重新讲" aria-label="从头再讲一遍">🔁</button>
+        <button type="button" id="say-line" class="secondary flex-btn">🔊 听我说一句</button>
+        <button type="button" id="speak" class="secondary flex-btn" hidden>仅用语音</button>
       </div>
+      <audio id="audio" controls hidden></audio>
+    </aside>
 
-      <div id="panel-image" role="tabpanel" aria-labelledby="tab-image" hidden>
-        <label for="image">选择图片（支持 png / jpg / webp，8MB 以内）</label>
-        <input id="image" name="image" type="file" accept="image/png,image/jpeg,image/bmp,image/webp" capture="environment">
-        <img id="preview" alt="已选图片预览" hidden>
-      </div>
+    <div class="content">
+      <!-- 视图1：输入 -->
+      <section id="view-input" class="view" aria-labelledby="in-title">
+        <form id="form" novalidate>
+          <h2 id="in-title" class="form-title">把内容给我</h2>
+          <div class="tabs" role="tablist" aria-label="输入方式">
+            <button type="button" role="tab" id="tab-text" aria-selected="true" aria-controls="panel-text">粘贴文字</button>
+            <button type="button" role="tab" id="tab-image" aria-selected="false" aria-controls="panel-image" tabindex="-1">上传图片 / 拍照</button>
+          </div>
 
-      <label class="check"><input type="checkbox" id="live"> 同时联网查最新官方信息（更慢）</label>
+          <div id="panel-text" role="tabpanel" aria-labelledby="tab-text">
+            <label for="text">短信或宣传内容</label>
+            <textarea id="text" name="text" rows="4" maxlength="2000"
+              placeholder="例如：国家药监局特批，包治百病，买三送三，抓紧抢购！"></textarea>
+            <p class="hint"><span id="count">0</span> / 2000 字</p>
+          </div>
 
-      <button type="submit" id="submit" class="primary">帮我看看</button>
-      <p id="error" class="error" role="alert"></p>
-    </form>
-  </section>
+          <div id="panel-image" role="tabpanel" aria-labelledby="tab-image" hidden>
+            <label for="image">选择图片（支持 png / jpg / webp，8MB 以内）</label>
+            <input id="image" name="image" type="file" accept="image/png,image/jpeg,image/bmp,image/webp" capture="environment">
+            <img id="preview" alt="已选图片预览" hidden>
+          </div>
 
-  <!-- 视图2：结果（左右分栏） -->
-  <section id="view-result" class="view" hidden aria-labelledby="verdict-title" tabindex="-1">
-    <div class="result-layout">
-      <!-- 左侧：数字人播报 -->
-      <aside class="left-panel">
-        <div id="agent-avatar" role="img" aria-label="数字人播报画面"></div>
-        <p id="avatar-status" class="hint avatar-status" aria-live="polite"></p>
-        <div class="avatar-controls">
-          <button type="button" id="pause-avatar" class="icon-btn" hidden title="暂停" aria-label="暂停播报">⏸</button>
-          <button type="button" id="replay-avatar" class="icon-btn" hidden title="重新讲" aria-label="重新讲一遍">🔁</button>
-          <button type="button" id="speak" class="secondary flex-btn" hidden>仅用语音</button>
+          <label class="check"><input type="checkbox" id="live"> 同时联网查最新官方信息（更慢）</label>
+
+          <button type="submit" id="submit" class="primary">帮我看看</button>
+          <p id="error" class="error" role="alert"></p>
+        </form>
+      </section>
+
+      <!-- 视图2：结果 -->
+      <section id="view-result" class="view" hidden aria-labelledby="verdict-title" tabindex="-1">
+        <div class="right-panel">
+          <div id="verdict" class="verdict">
+            <h2 id="verdict-title"></h2>
+            <p id="risk"></p>
+          </div>
+
+          <div class="block" id="tips-block">
+            <h3>给您的提醒</h3>
+            <ul id="tips" class="tips"></ul>
+          </div>
+
+          <details class="block" id="script-block">
+            <summary><span class="arrow" aria-hidden="true">▶</span>数字人讲的内容</summary>
+            <p id="script" class="script"></p>
+          </details>
+
+          <details class="block">
+            <summary><span class="arrow" aria-hidden="true">▶</span>识别出的骗人手法</summary>
+            <ul id="tactics" class="list"></ul>
+          </details>
+
+          <details class="block">
+            <summary><span class="arrow" aria-hidden="true">▶</span>和官方信息对照</summary>
+            <p id="overall"></p>
+            <ul id="authority" class="list"></ul>
+          </details>
+
+          <details class="block" id="ocr-block" hidden>
+            <summary><span class="arrow" aria-hidden="true">▶</span>从图片里认出的文字</summary>
+            <pre id="ocr"></pre>
+          </details>
+
+          <p id="review" class="review"></p>
+          <p class="disclaimer" id="disclaimer"></p>
+          <p class="hotline">拿不准？拨打全国反诈专线 <a href="tel:96110">96110</a>，或问问子女。</p>
+
+          <button type="button" id="back-home" class="primary">再看一条</button>
         </div>
-        <audio id="audio" controls hidden></audio>
-      </aside>
+      </section>
 
-      <!-- 右侧：核查结果 -->
-      <div class="right-panel">
-        <div id="verdict" class="verdict">
-          <h2 id="verdict-title"></h2>
-          <p id="risk"></p>
+      <!-- 核查遮罩：只盖住右侧内容，左侧数字人仍可点击 -->
+      <div id="overlay" class="overlay" hidden>
+        <div class="overlay-card" role="status">
+          <div class="loader" aria-hidden="true">
+            <span class="ring r1"></span>
+            <span class="ring r2"></span>
+            <span class="dot"></span>
+          </div>
+          <p id="overlay-text">正在帮您核查，大约需要 30 秒到 1 分钟……</p>
+          <p class="overlay-hint">等待的时候，可以点数字人下方的「听一句防骗提醒」</p>
         </div>
-
-        <div class="block" id="tips-block">
-          <h3>给您的提醒</h3>
-          <ul id="tips" class="tips"></ul>
-        </div>
-
-        <details class="block" id="script-block">
-          <summary><span class="arrow" aria-hidden="true">▶</span>数字人讲的内容</summary>
-          <p id="script" class="script"></p>
-        </details>
-
-        <details class="block">
-          <summary><span class="arrow" aria-hidden="true">▶</span>识别出的骗人手法</summary>
-          <ul id="tactics" class="list"></ul>
-        </details>
-
-        <details class="block">
-          <summary><span class="arrow" aria-hidden="true">▶</span>和官方信息对照</summary>
-          <p id="overall"></p>
-          <ul id="authority" class="list"></ul>
-        </details>
-
-        <details class="block" id="ocr-block" hidden>
-          <summary><span class="arrow" aria-hidden="true">▶</span>从图片里认出的文字</summary>
-          <pre id="ocr"></pre>
-        </details>
-
-        <p id="review" class="review"></p>
-        <p class="disclaimer" id="disclaimer"></p>
-        <p class="hotline">拿不准？拨打全国反诈专线 <a href="tel:96110">96110</a>，或问问子女。</p>
-
-        <button type="button" id="back-home" class="primary">再看一条</button>
       </div>
     </div>
-  </section>
-</main>
-
-<!-- 核查遮罩：覆盖在当前页上，背景变暗 + 转动动画 -->
-<div id="overlay" class="overlay" hidden>
-  <div class="overlay-card">
-    <div class="loader" aria-hidden="true">
-      <span class="ring r1"></span>
-      <span class="ring r2"></span>
-      <span class="dot"></span>
-    </div>
-    <p id="overlay-text">正在帮您核查，大约需要 30 秒到 1 分钟……</p>
   </div>
-</div>
+</main>
 
 <script src="/static/app.js"></script>
 </body>

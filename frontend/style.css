@@ -43,42 +43,40 @@ main {
 }
 .view { height: 100%; display: flex; flex-direction: column; }
 .view[hidden] { display: none; }
-/* 预备态：结果页已挂载但被 overlay 盖住，脱离文档流保留尺寸供 SDK 初始化 */
-.view.preparing { position: absolute; inset: .8rem; opacity: 0; pointer-events: none; }
 
-/* ---------- 视图1：输入 ---------- */
-#view-input { justify-content: center; }
-#view-input form {
-  background: var(--card); border-radius: var(--radius);
-  padding: 1.1rem 1.3rem; box-shadow: var(--shadow);
-}
-.form-title { font-size: 1.35rem; margin: 0 0 .8rem; text-align: center; color: var(--primary); }
-
-/* ---------- 视图2：结果（左右分栏） ---------- */
-.result-layout { display: flex; gap: 1rem; height: 100%; min-height: 0; }
+/* ---------- 整体：左侧常驻数字人 + 右侧内容 ---------- */
+.layout { display: flex; gap: 1rem; height: 100%; min-height: 0; }
 .left-panel {
-  flex: 0 0 38%;
+  flex: 0 0 34%;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   background: var(--card); border-radius: var(--radius);
   padding: .8rem; box-shadow: var(--shadow);
   min-height: 0;
 }
-.right-panel {
-  flex: 1; min-width: 0;
-  overflow-y: auto;
-  background: var(--card); border-radius: var(--radius);
-  padding: 1rem 1.2rem; box-shadow: var(--shadow);
-}
-.right-panel::-webkit-scrollbar { width: 6px; }
-.right-panel::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+.content { flex: 1; min-width: 0; position: relative; min-height: 0; }
 
-/* 数字人容器：按可用高度自适应 */
-#agent-avatar {
-  width: auto; height: min(100%, 520px); max-width: 100%;
+/* 数字人画面 + 未出场时的占位按钮（叠在同一位置） */
+.avatar-stage {
+  position: relative;
+  height: min(100%, 520px); max-width: 100%;
   aspect-ratio: 9 / 16;
-  background: #000; border-radius: 12px; overflow: hidden;
+  flex: 0 1 auto; min-height: 0;
 }
+#agent-avatar {
+  width: 100%; height: 100%;
+  background: #000; border-radius: 12px; overflow: hidden; cursor: pointer;
+}
+.avatar-placeholder {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem;
+  border: none; border-radius: 12px; cursor: pointer;
+  background: var(--primary-grad); color: #fff;
+  font-size: 1.1rem; font-weight: 700; font-family: inherit;
+}
+.avatar-placeholder[hidden] { display: none; }
+.avatar-placeholder .ph-icon { font-size: 3.5rem; line-height: 1; }
+.avatar-placeholder:hover { filter: brightness(1.08); }
 .avatar-status { text-align: center; margin: .5rem 0; min-height: 1em; }
 
 /* 左侧播报控件：符号按钮 + 文字按钮同一排 */
@@ -89,9 +87,28 @@ main {
   border-radius: 12px; cursor: pointer; padding: 0;
   transition: background .15s, color .15s, transform .1s;
 }
+.icon-btn[hidden], .flex-btn[hidden] { display: none; }
 .icon-btn:hover { background: var(--primary); color: #fff; transform: translateY(-1px); }
 .icon-btn:active { transform: translateY(0); }
 .flex-btn { flex: 1; min-height: 52px; }
+
+/* ---------- 视图1：输入 ---------- */
+#view-input { justify-content: center; }
+#view-input form {
+  background: var(--card); border-radius: var(--radius);
+  padding: 1.1rem 1.3rem; box-shadow: var(--shadow);
+}
+.form-title { font-size: 1.35rem; margin: 0 0 .8rem; text-align: center; color: var(--primary); }
+
+/* ---------- 视图2：结果 ---------- */
+.right-panel {
+  height: 100%;
+  overflow-y: auto;
+  background: var(--card); border-radius: var(--radius);
+  padding: 1rem 1.2rem; box-shadow: var(--shadow);
+}
+.right-panel::-webkit-scrollbar { width: 6px; }
+.right-panel::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
 
 /* ---------- 通用 ---------- */
 h2 { font-size: 1.3rem; margin: 0 0 .8rem; }
@@ -138,7 +155,7 @@ button:disabled { opacity: .6; cursor: wait; transform: none; }
 
 /* ---------- 核查遮罩 overlay ---------- */
 .overlay {
-  position: fixed; inset: 0; z-index: 100;
+  position: absolute; inset: 0; z-index: 100; border-radius: var(--radius);
   background: rgba(20, 22, 35, .55);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
@@ -152,6 +169,7 @@ button:disabled { opacity: .6; cursor: wait; transform: none; }
   max-width: 90%;
 }
 .overlay-card p { margin: 0; font-size: 1.15rem; font-weight: 600; color: var(--text); text-align: center; }
+.overlay-card .overlay-hint { font-size: .9rem; font-weight: normal; color: var(--muted); }
 
 /* 双圈转动 + 中心脉冲加载动画 */
 .loader { position: relative; width: 64px; height: 64px; }
@@ -212,8 +230,10 @@ audio { width: 100%; margin-top: .6rem; max-width: 360px; }
 
 /* 窄屏：左右改上下，保证可用 */
 @media (max-width: 720px) {
-  .result-layout { flex-direction: column; }
+  body { overflow: auto; height: auto; }
+  main { overflow: visible; }
+  .layout { flex-direction: column; height: auto; }
   .left-panel { flex: 0 0 auto; }
-  #agent-avatar { height: 260px; }
-  .right-panel { flex: 1; }
+  .avatar-stage { height: 260px; }
+  .content { min-height: 60vh; }
 }

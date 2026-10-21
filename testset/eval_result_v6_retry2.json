@@ -1,0 +1,41 @@
+{
+  "summary": {
+    "诈骗召回率(判为诈骗)": "无样本",
+    "诈骗预警率(诈骗+存疑)": "无样本",
+    "诈骗精确率": "无样本",
+    "误伤率(正常被判诈骗)": "无样本",
+    "正常样本被标存疑": "无样本",
+    "权威对照·诈骗样本判矛盾": "无样本",
+    "权威对照·正常样本未判矛盾": "无样本",
+    "转人工复核比例(全部)": "无样本"
+  },
+  "rows": [
+    {
+      "id": "S04",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Connection error.",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "S12",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Connection error.",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "N01",
+      "label": "normal",
+      "category": "健康科普",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Connection error.",
+      "authority_overall": "",
+      "needs_human_review": false
+    }
+  ]
+}

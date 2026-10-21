@@ -39,6 +39,9 @@ OPENDEV_BASE_URL=https://api.openai-next.com/v1
 OPENDEV_MODEL=claude-opus-5
 ANYSEARCH_MCP_URL=https://api.anysearch.com/mcp
 ANYSEARCH_API_KEY=<你的AnySearch key，as_sk_开头>
+# 星云数字人（可选，不填则页面只用普通语音播报）
+XINGYUN_APP_ID=<星云应用 App ID>
+XINGYUN_APP_SECRET=<星云应用 App Secret>
 
 
 ⚠️ .env 已被 .gitignore 忽略，绝不提交进 Git。Key 通过安全渠道（飞书/队长）分发。
@@ -70,11 +73,59 @@ python backend/server.py
 - POST /api/analyze  表单字段 text（文字，≤2000 字）或 image（图片，≤8MB），可选 live=true 联网检索
 - POST /api/tts      JSON {"text": "..."}（≤500 字），返回 mp3；联网失败时前端退回浏览器自带朗读
 
+- GET  /api/avatar-config  返回星云数字人配置；未配置时 {"enabled": false}
+
+⚠️ 星云 Web SDK 要求在浏览器里传 appSecret，/api/avatar-config 会把 Secret 下发给页面。目前只监听 127.0.0.1 所以只有本机可见；对外部署前要改用演示专用应用并限额，或向星云确认能否由服务端签发临时令牌。
+
+页面交互：
+
+- 左侧常驻数字人（首页、核查中、结果页共用一个会话，只初始化一次）。
+- 首页：点数字人或「🔊 听我说一句」，随机讲一句开场欢迎 / 操作引导。
+- 核查中：右侧显示遮罩，数字人就绪后先讲一句反诈警示；点「🔊 听一句防骗提醒」可以再随机听一句。
+- 结果页：先说结果反馈（诈骗且权威对照判矛盾时才说「与官方反诈通报一致」），再播银龄解读，最后给做法建议。
+- ⏸ / ▶ 同一个按钮：暂停后点 ▶ 从当前这句接着讲；🔁 从头再讲。星云 SDK 2.4.1 只提供 speak / interrupt，没有暂停续播接口，所以前端把文稿按句切段逐段播报，续播粒度是「一句」。
+- 数字人初始化失败或未配置时，自动退回 edge-tts 语音；再失败退回浏览器自带朗读。
+
+台词在 frontend/app.js 顶部的 LINES / FEEDBACK 里，直接改即可。
+
 命令行用法仍可用：python backend/main.py "要检测的文字" [--live] [--tts]
 
 6. 量化评测
 
-python backend/scripts/eval_testset.py   # 25 条带标签样本，结果写入 testset/eval_result.json
+python backend/scripts/eval_testset.py                    # 25 条带标签样本，结果写入 testset/eval_result.json
+python backend/scripts/eval_testset.py --ids S07,N01      # 只跑指定样本（调提示词时先小范围验证）
+python backend/scripts/eval_testset.py --out testset/x.json
+
+最新结果（v6，25 条：诈骗 12 / 正常 10 / 边界 3）：
+
+完成 22/25 条（S04、S12、N01 三条连续 3 次遇到模型接口断连，没有拿到结果，不计入指标，也不算判错）。
+
+| 指标 | 结果 |
+|---|---|
+| 诈骗召回率（判为诈骗） | 10/10 = 100% |
+| 诈骗精确率 | 10/10 = 100% |
+| 误伤率（正常被判诈骗） | 0/9 = 0% |
+| 正常样本被标存疑 | 0/9 = 0% |
+| 权威对照·诈骗样本判矛盾 | 10/10 = 100% |
+| 权威对照·正常样本未判矛盾 | 9/9 = 100% |
+| 转人工复核比例 | 6/22 = 27% |
+
+边界样本 B01–B03 均判为正常并转人工复核。明细：testset/eval_result_v6_merged.json（由 backend/scripts/merge_eval.py 合并全量和重跑结果生成）。
+
+各版本对比：
+
+| 版本 | 改动 | 权威对照·诈骗判矛盾 |
+|---|---|---|
+| v3 | 本地知识库 RAG，top_k=4 | 9/12 = 75% |
+| v4 | 检索 top_k 4→8 | 11/12 = 92% |
+| v6 | 修 S07：识别 Agent 只输出原文说法，权威 Agent 明确「官方提示的诈骗套路判矛盾」 | 10/10 = 100%（22 条完成） |
+
+已知问题：
+
+- 评测 v6 有 3 条样本（S04、S12、N01）因接口断连未跑出结果；它们在 v4 全量里分别判对，v6 的 100% 基于 22 条，样本量小，不代表线上准确率。
+- 模型接口今天断连较多。已给客户端设 120 秒超时（之前无超时，单条曾卡住 1 小时以上），并改为 3s→6s 退避重试；演示前建议先跑一遍样本确认接口通畅。
+- 数字人「继续」按句续播：暂停后从当前这句的开头重讲，不是从半句接上（SDK 无暂停续播接口）。
+- 星云 appSecret 会下发到浏览器，仅限本机演示，见上文接口说明。
 
 目录结构
 
