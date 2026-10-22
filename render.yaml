@@ -1,0 +1,27 @@
+# Render 部署配置：在 Render 控制台选 New > Blueprint，连接本仓库即可。
+# 密钥用 sync: false，部署时在控制台手动填写，不写进仓库。
+services:
+  - type: web
+    name: seniorguard-agent
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python backend/server.py
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      - key: HOST
+        value: 0.0.0.0
+      - key: OPENDEV_API_KEY
+        sync: false
+      - key: OPENDEV_BASE_URL
+        value: https://api.openai-next.com/v1
+      - key: OPENDEV_MODEL
+        value: claude-opus-5
+      - key: ANYSEARCH_API_KEY
+        sync: false
+      - key: XINGYUN_APP_ID
+        sync: false
+      - key: XINGYUN_APP_SECRET
+        sync: false

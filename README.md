@@ -77,6 +77,20 @@ python backend/server.py
 
 ⚠️ 星云 Web SDK 要求在浏览器里传 appSecret，/api/avatar-config 会把 Secret 下发给页面。目前只监听 127.0.0.1 所以只有本机可见；对外部署前要改用演示专用应用并限额，或向星云确认能否由服务端签发临时令牌。
 
+### 云平台部署（Render）
+
+仓库根目录已有 `render.yaml`。步骤：
+
+1. 登录 https://render.com，用 GitHub 授权。
+2. New > Blueprint，选 `SeniorGuard-Agent` 仓库，分支 main。
+3. 在环境变量里填 `OPENDEV_API_KEY`、`ANYSEARCH_API_KEY`，数字人用的 `XINGYUN_APP_ID` / `XINGYUN_APP_SECRET`（可留空，页面就不显示数字人）。
+4. 部署完成后得到 `https://seniorguard-agent-xxxx.onrender.com`，这就是部署链接。
+
+注意：
+- 已内置限频（每 IP 每分钟 4 次分析，全站每小时 120 次），可用 `RATE_ANALYZE_PER_MIN` 等环境变量调整。没有访问口令，链接公开后任何人都能消耗额度。
+- 公网部署会把星云 appSecret 下发给访问者，请用演示专用应用。
+- 免费实例 15 分钟无访问会休眠，首次打开约需 1 分钟唤醒；内存 512MB，OCR 依赖较重，上传图片可能超限。演示前先打开一次预热。
+
 页面交互：
 
 - 左侧常驻数字人（首页、核查中、结果页共用一个会话，只初始化一次）。

@@ -35,6 +35,42 @@ MAX_TTS = 500
 
 app = FastAPI(title="银龄数字卫士 API", docs_url="/docs")
 
+# ---- 限频（内存计数，单进程有效）：公网临时演示用，防止额度被刷 ----
+import time  # noqa: E402
+from collections import defaultdict, deque  # noqa: E402
+from fastapi import Request  # noqa: E402
+
+RATE_LIMITS = {  # 路径 -> (每 IP 每分钟次数, 全站每小时次数)
+    "/api/analyze": (int(os.getenv("RATE_ANALYZE_PER_MIN", "4")), int(os.getenv("RATE_ANALYZE_PER_HOUR", "120"))),
+    "/api/tts": (int(os.getenv("RATE_TTS_PER_MIN", "15")), int(os.getenv("RATE_TTS_PER_HOUR", "400"))),
+}
+_ip_hits: dict = defaultdict(deque)
+_all_hits: dict = defaultdict(deque)
+
+
+def _client_ip(request: Request) -> str:
+    fwd = request.headers.get("x-forwarded-for", "")
+    return fwd.split(",")[0].strip() if fwd else (request.client.host if request.client else "?")
+
+
+@app.middleware("http")
+async def rate_limit(request: Request, call_next):
+    limits = RATE_LIMITS.get(request.url.path)
+    if limits and request.method == "POST":
+        now = time.time()
+        per_min, per_hour = limits
+        ip_q = _ip_hits[(request.url.path, _client_ip(request))]
+        all_q = _all_hits[request.url.path]
+        while ip_q and now - ip_q[0] > 60:
+            ip_q.popleft()
+        while all_q and now - all_q[0] > 3600:
+            all_q.popleft()
+        if len(ip_q) >= per_min or len(all_q) >= per_hour:
+            return JSONResponse({"detail": "请求太频繁,请稍后再试"}, status_code=429, headers={"Retry-After": "60"})
+        ip_q.append(now)
+        all_q.append(now)
+    return await call_next(request)
+
 
 def _run(source: str, live: bool, force_text: bool = False) -> dict:
     try:
@@ -132,4 +168,5 @@ app.mount("/static", StaticFiles(directory=FRONTEND), name="static")
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="127.0.0.1", port=int(os.getenv("PORT", "8000")))
+    # 本机默认只监听 127.0.0.1；云平台部署时设 HOST=0.0.0.0（render.yaml 已设置）
+    uvicorn.run(app, host=os.getenv("HOST", "127.0.0.1"), port=int(os.getenv("PORT", "8000")))
