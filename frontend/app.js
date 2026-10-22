@@ -69,7 +69,7 @@ let avatarCfg = null;
 let agent = null;
 let agentReady = null;
 
-const cfgReady = fetch("/api/avatar-config")
+const cfgReady = fetch((window.API_BASE || "") + "/api/avatar-config")
   .then((r) => r.json())
   .then((c) => { if (c.enabled) avatarCfg = c; })
   .catch(() => { /* 拿不到配置就只用普通语音 */ });
@@ -350,7 +350,7 @@ async function speakAudio(text) {
   const oldText = btn.textContent;
   btn.textContent = "准备中……";
   try {
-    const resp = await fetch("/api/tts", {
+    const resp = await fetch((window.API_BASE || "") + "/api/tts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: text.slice(0, 500) }),
@@ -455,7 +455,7 @@ async function fetchAnalyze(fd) {
     $("overlay-text").textContent = sec < 60 ? base : `还在帮您核查，已经等了 ${sec} 秒，网络有点慢，请再稍等……`;
   }, 1000);
   try {
-    const resp = await fetch("/api/analyze", { method: "POST", body: fd, signal: ctrl.signal });
+    const resp = await fetch((window.API_BASE || "") + "/api/analyze", { method: "POST", body: fd, signal: ctrl.signal });
     const data = await resp.json().catch(() => ({}));
     if (!resp.ok) throw new Error(data.detail || "检测失败，请稍后再试");
     return data;

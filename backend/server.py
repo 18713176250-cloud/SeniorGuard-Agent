@@ -35,6 +35,16 @@ MAX_TTS = 500
 
 app = FastAPI(title="银龄数字卫士 API", docs_url="/docs")
 
+# 允许静态前端（GitHub Pages 等）跨域调用；CORS_ORIGINS 用逗号分隔，默认放开
+from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[o.strip() for o in os.getenv("CORS_ORIGINS", "*").split(",")],
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
+
 # ---- 限频（内存计数，单进程有效）：公网临时演示用，防止额度被刷 ----
 import time  # noqa: E402
 from collections import defaultdict, deque  # noqa: E402
