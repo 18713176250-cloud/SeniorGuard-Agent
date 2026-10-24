@@ -1,0 +1,427 @@
+{
+  "summary": {
+    "诈骗召回率(判为诈骗)": "12/12 = 100%",
+    "诈骗预警率(诈骗+存疑)": "12/12 = 100%",
+    "诈骗精确率": "12/12 = 100%",
+    "误伤率(正常被判诈骗)": "0/3 = 0%",
+    "正常样本被标存疑": "0/3 = 0%",
+    "权威对照·诈骗样本判矛盾": "11/12 = 92%",
+    "权威对照·正常样本未判矛盾": "3/3 = 100%",
+    "转人工复核比例(全部)": "3/15 = 20%"
+  },
+  "rows": [
+    {
+      "id": "S01",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "伪权威",
+        "虚假疗效",
+        "幸存者偏差",
+        "限时逼单"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "无法判定",
+        "无法判定",
+        "矛盾",
+        "无法判定"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "同时出现伪造官方批文、根治停药承诺、无从核实的康复人数和今日截止逼单，是典型的伪健康诈骗话术，涉及擅自停药有直接健康风险。"
+    },
+    {
+      "id": "S02",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "伪权威",
+        "恐惧营销",
+        "虚假疗效",
+        "限时逼单"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "无法判定",
+        "矛盾",
+        "矛盾",
+        "无法判定"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "伪专家背书加恐吓话术，推销所谓一个疗程清除血栓的产品并限时逼单，是典型的伪健康骗局，建议老人不要购买并交由家人或正规医院核实。"
+    },
+    {
+      "id": "S03",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "虚假疗效",
+        "伪权威",
+        "伪权威",
+        "幸存者偏差",
+        "限时逼单",
+        "情感绑架"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "矛盾",
+        "矛盾",
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "用伪科学名词包装普通床垫并承诺抗癌奇效，配合个例见证与下单赠礼催促，是典型的老年人保健品诈骗话术，建议提交人工复核并提醒家属。"
+    },
+    {
+      "id": "S04",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "伪权威",
+        "虚假疗效",
+        "虚假疗效",
+        "限时逼单"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "无法判定",
+        "矛盾",
+        "矛盾",
+        "无法判定"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "同时具备伪造院士背书、包治重大疾病、诱导停药和先款后货四项典型特征，判定为保健品类诈骗，建议老人切勿打款并保留原始信息交由家人或警方核实。"
+    },
+    {
+      "id": "S05",
+      "label": "scam",
+      "category": "公检法",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "冒充公检法",
+        "恐惧营销",
+        "伪权威",
+        "情感绑架",
+        "限时逼单"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "矛盾",
+        "矛盾"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "自称公安、编造洗钱案并要求保密转入安全账户，符合冒充公检法诈骗的完整话术链，建议立即停止转账并拨打110或96110核实。"
+    },
+    {
+      "id": "S06",
+      "label": "scam",
+      "category": "公检法",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "冒充公检法",
+        "恐惧营销",
+        "伪权威"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "矛盾",
+        "一致"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "冒充法院以涉案恐吓，诱导下载不明APP并索取银行卡号和验证码，是典型的冒充公检法骗局，切勿点击。"
+    },
+    {
+      "id": "S07",
+      "label": "scam",
+      "category": "冒充亲友",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "冒充熟人",
+        "情感绑架",
+        "恐惧营销",
+        "限时逼单",
+        "信息隔离"
+      ],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定",
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "冒充子女换号求救、编造车祸急需转账并要求瞒着家人，是典型的冒充熟人汇款骗局，请立即用原号码或向其他家人当面核实，切勿转账。"
+    },
+    {
+      "id": "S08",
+      "label": "scam",
+      "category": "投资",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "虚假投资",
+        "伪权威",
+        "限时逼单",
+        "恐惧营销"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "矛盾",
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "高收益加保本承诺、模糊权威身份与限时转账要求同时出现，是典型养老理财类投资诈骗话术，建议立即停止转账并向家人或正规金融机构核实。"
+    },
+    {
+      "id": "S09",
+      "label": "scam",
+      "category": "中奖",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "虚假中奖",
+        "限时逼单",
+        "情感绑架"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "无法判定",
+        "矛盾",
+        "矛盾"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "先许中奖再索要手续费和身份证、银行卡号，属典型虚假中奖骗局，切勿转账或提供证件信息。"
+    },
+    {
+      "id": "S10",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "伪权威",
+        "虚假疗效",
+        "恐惧营销",
+        "情感绑架",
+        "限时逼单"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "矛盾",
+        "无法判定"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "同时具备虚假疗效承诺、伪权威身份、贬低正规医疗与情感逼单，是典型伪健康带货诈骗话术。"
+    },
+    {
+      "id": "S11",
+      "label": "scam",
+      "category": "客服",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "伪权威",
+        "情感绑架",
+        "恐惧营销"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "无法判定"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "冒充客服并诱导下载屏幕共享软件远程操作，是典型的退款类远程控制诈骗，正规平台退款绝不需要屏幕共享。"
+    },
+    {
+      "id": "S12",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "伪权威",
+        "虚假疗效",
+        "情感绑架"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "以免费鸡蛋、大米食用油引流，再用伪专家背书、夸大疗效和亲情施压推销保健品，是针对老年人的典型会销套路。"
+    },
+    {
+      "id": "N01",
+      "label": "normal",
+      "category": "健康科普",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "一致",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "内容为常规高血压管理科普，强调遵医嘱、限盐、监测血压，无任何推销、恐吓或疗效承诺，属正常健康建议。"
+    },
+    {
+      "id": "N02",
+      "label": "normal",
+      "category": "健康科普",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "资料不足，建议人工复核",
+      "judgements": [
+        "无法判定",
+        "无法判定"
+      ],
+      "needs_human_review": true,
+      "review_reasons": [
+        "权威资料不足，无法对照"
+      ],
+      "reason": "内容为通用运动健康建议，无承诺疗效、无权威冒充、无催促付款等诈骗要素，且提示热身与量力而行，属正常科普。"
+    },
+    {
+      "id": "N03",
+      "label": "normal",
+      "category": "反诈提醒",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "与官方信息一致",
+      "judgements": [
+        "一致"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "这是官方反诈科普提示，内容是教老年人识别并拒绝「安全账户」转账骗局，没有索要钱财或个人信息，属正常宣传。"
+    },
+    {
+      "id": "N04",
+      "label": "normal",
+      "category": "健康科普",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Error code: 401 - {'error': {'message': 'Invalid token. (request id: 2026102107272099649341896e93ae3mYjRYCWM)', 'type': 'shell_api_error'}}",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "N05",
+      "label": "normal",
+      "category": "日常通知",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Error code: 401 - {'error': {'message': 'Invalid token. (request id: 2026102107272827245449096e93ae3mv57esRi)', 'type': 'shell_api_error'}}",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "N06",
+      "label": "normal",
+      "category": "养生建议",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Error code: 401 - {'error': {'message': 'Invalid token. (request id: 2026102107273526324171796e93ae31F0tYDW6)', 'type': 'shell_api_error'}}",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "N07",
+      "label": "normal",
+      "category": "银行通知",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Error code: 401 - {'error': {'message': 'Invalid token. (request id: 2026102107274220011940196e93ae31akTRnry)', 'type': 'shell_api_error'}}",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "N08",
+      "label": "normal",
+      "category": "健康科普",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Error code: 401 - {'error': {'message': 'Invalid token. (request id: 2026102107274926439343196e93ae3CQgfvR4D)', 'type': 'shell_api_error'}}",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "N09",
+      "label": "normal",
+      "category": "日常通知",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Error code: 401 - {'error': {'message': 'Invalid token. (request id: 2026102107275644670207796e93ae3fmm7diP9)', 'type': 'shell_api_error'}}",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "N10",
+      "label": "normal",
+      "category": "养生建议",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Error code: 401 - {'error': {'message': 'Invalid token. (request id: 2026102107280442472871396e93ae3wYZrmV4d)', 'type': 'shell_api_error'}}",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "B01",
+      "label": "borderline",
+      "category": "边界",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Error code: 401 - {'error': {'message': 'Invalid token. (request id: 2026102107281199976115996e93ae3KHM0CBBP)', 'type': 'shell_api_error'}}",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "B02",
+      "label": "borderline",
+      "category": "边界",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Error code: 401 - {'error': {'message': 'Invalid token. (request id: 2026102107281944542755096e93ae3kVzYq0oY)', 'type': 'shell_api_error'}}",
+      "authority_overall": "",
+      "needs_human_review": false
+    },
+    {
+      "id": "B03",
+      "label": "borderline",
+      "category": "边界",
+      "verdict": "ERROR",
+      "error": "claude-opus-5 重试3次仍失败: Error code: 401 - {'error': {'message': 'Invalid token. (request id: 2026102107282643496460896e93ae3f0pn7uPP)', 'type': 'shell_api_error'}}",
+      "authority_overall": "",
+      "needs_human_review": false
+    }
+  ]
+}

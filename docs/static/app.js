@@ -6,23 +6,24 @@ let view = "home"; // home | waiting | result
 let resultScript = "";
 
 // ---------- 数字人台词（首页 / 等待 / 结果反馈） ----------
+// 每条台词只有一句话：点一下随机讲一句就够了
 const LINES = {
   home: [
-    "银龄数字卫士在线帮您！收到可疑的短信、宣传单？别急着信，拍张照或粘贴过来，我帮您辨辨真假。",
-    "您好，我是银龄数字卫士。专门帮您识别保健品骗局、冒充客服的短信、中奖陷阱，让骗子无处遁形。",
-    "点「上传图片」，拍下您收到的宣传单或短信；或者点「粘贴文字」，把内容贴进来，大约半分钟到一分钟就能出结果。",
-    "看不清字没关系，拍照就行。我会用文字识别技术把内容读出来，再帮您判断是不是骗局。",
-    "操作很简单，拍一张照、粘一段话，我就能告诉您这是真信息还是假把戏。",
-    "有人打电话让您转账、要验证码？先别急，把对方说的话打成文字发给我，我帮您看看。",
+    "我是银龄数字卫士，收到可疑短信或宣传单，拍张照发给我看看。",
+    "不确定是不是骗局？粘贴文字或拍照，我帮您辨真假。",
+    "看不清字没关系，拍照就行，我来帮您读。",
+    "操作很简单，拍一张照或粘一段话，就能出结果。",
+    "有人让您转账、要验证码？先别急，发给我帮您看看。",
+    "保健品、中奖、冒充客服，这些骗局我都能帮您识别。",
   ],
   waiting: [
-    "凡是说「包治百病」「国家特批」「买三送三」的，多半是保健品骗局，请多留个心眼。",
-    "收到自称公检法、银行客服的电话或短信？记住：真官方不会让您转账、提供验证码。拿不准就来问我。",
-    "相信官网，不轻信短信链接；小心骗局，遇事先验证再掏钱。",
-    "公检法不会通过电话办案，更没有什么「安全账户」。让您往安全账户转钱的，一定是骗子。",
-    "孩子突然换了号码说急需用钱？先打孩子原来的号码，或者问问家里人，核实了再说。",
-    "天上不会掉馅饼。说您中了大奖，却要先交手续费的，都是骗局。",
-    "我正在帮您核对官方资料，马上就好，您稍等一下。",
+    "凡是说包治百病、国家特批的，多半是骗局。",
+    "真官方不会让您转账，也不会向您要验证码。",
+    "公检法不会电话办案，也没有什么安全账户。",
+    "孩子换号码要钱？先打他原来的号码核实。",
+    "天上不会掉馅饼，中奖先交手续费的都是骗局。",
+    "不轻信短信链接，遇事先验证再掏钱。",
+    "我正在帮您核对官方资料，马上就好。",
   ],
 };
 const FEEDBACK = {
@@ -89,6 +90,22 @@ function loadScript(src) {
   });
 }
 
+// 等数字人出第一帧再撤掉占位图，避免中间露出黑屏（最多等 8 秒）
+function waitFirstFrame() {
+  return new Promise((resolve) => {
+    const box = $("agent-avatar");
+    const t0 = Date.now();
+    const tick = () => {
+      const v = box.querySelector("video");
+      const c = box.querySelector("canvas");
+      const ok = (v && v.readyState >= 2 && v.videoWidth > 0) || (!v && c && c.width > 0);
+      if (ok || Date.now() - t0 > 8000) return setTimeout(resolve, 250);
+      setTimeout(tick, 150);
+    };
+    tick();
+  });
+}
+
 // 只初始化一次；失败后允许下次重试
 function initAgent() {
   if (agentReady) return agentReady;
@@ -124,6 +141,7 @@ function initAgent() {
         setAvatarStatus(msg);
       },
     });
+    await waitFirstFrame();
     $("avatar-placeholder").hidden = true;
     setAvatarStatus("");
   })();
@@ -280,7 +298,7 @@ function updateControls() {
     paused = synth.paused;
   }
   toggle.hidden = !showToggle;
-  toggle.textContent = paused ? "▶" : "⏸";
+  toggle.innerHTML = `<svg class="ic" aria-hidden="true"><use href="#i-${paused ? "play" : "pause"}"/></svg>`;
   toggle.title = paused ? "继续" : "暂停";
   toggle.setAttribute("aria-label", paused ? "继续播报" : "暂停播报");
 
@@ -288,7 +306,7 @@ function updateControls() {
   $("speak").hidden = !(view === "result" && resultScript && avatarCfg);
   const sayBtn = $("say-line");
   sayBtn.hidden = view === "result";
-  sayBtn.textContent = view === "waiting" ? "🔊 听一句防骗提醒" : "🔊 听我说一句";
+  sayBtn.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-sound"/></svg> ' + (view === "waiting" ? "听一句防骗提醒" : "听我说一句");
 }
 
 // 暂停 / 继续共用一个按钮
@@ -385,8 +403,15 @@ function stopAllSpeech() {
 }
 
 // ---------- 核查遮罩 ----------
+function setProgress(pct, text) {
+  const v = Math.max(0, Math.min(100, Math.round(pct)));
+  $("pbar-fill").style.width = v + "%";
+  $("pbar-pct").textContent = v + "%";
+  document.querySelector(".pbar").setAttribute("aria-valuenow", v);
+  if (text) $("overlay-text").textContent = text;
+}
 function showOverlay(text) {
-  $("overlay-text").textContent = text;
+  setProgress(0, text);
   $("overlay").hidden = false;
 }
 function hideOverlay() {
@@ -448,12 +473,14 @@ async function fetchAnalyze(fd) {
   const limit = fd.get("live") === "true" ? ANALYZE_TIMEOUT_LIVE_MS : ANALYZE_TIMEOUT_MS;
   const timer = setTimeout(() => ctrl.abort(), limit);
   const t0 = Date.now();
-  const base = $("overlay-text").textContent;
-  const tick = setInterval(() => {
-    const sec = Math.round((Date.now() - t0) / 1000);
-    // 超过 1 分钟时告诉老人还在查，避免以为卡死了
-    $("overlay-text").textContent = sec < 60 ? base : `还在帮您核查，已经等了 ${sec} 秒，网络有点慢，请再稍等……`;
-  }, 1000);
+  // 进度条：按经验耗时（约 30 秒）缓慢逼近 95%，结果回来前不会走满；超过 40 秒补一句安抚
+  const showWait = () => {
+    const sec = (Date.now() - t0) / 1000;
+    const pct = 95 * (1 - Math.exp(-sec / 22));
+    setProgress(pct, sec < 40 ? "正在帮您核查，请稍等……" : "还在帮您核查，网络有点慢，请再稍等……");
+  };
+  showWait();
+  const tick = setInterval(showWait, 1000);
   try {
     const resp = await fetch((window.API_BASE || "") + "/api/analyze", { method: "POST", body: fd, signal: ctrl.signal });
     const data = await resp.json().catch(() => ({}));
@@ -488,7 +515,7 @@ $("form").addEventListener("submit", async (e) => {
   $("submit").disabled = true;
   stopAllSpeech();
   setView("waiting");
-  showOverlay("正在帮您核查，大约需要 30 秒到 1 分钟……");
+  showOverlay("正在帮您核查，请稍等……");
 
   // 等待期间：数字人准备好了就先讲一句防骗提醒（点按钮还能再听）
   await cfgReady;
@@ -534,12 +561,139 @@ function li(parent, parts) {
   const item = document.createElement("li");
   parts.forEach(([text, cls]) => {
     if (!text) return;
-    const span = document.createElement(cls === "br" ? "div" : "span");
+    const isBlock = cls && /^(br|basis)\b/.test(cls);
+    const span = document.createElement(isBlock ? "div" : "span");
     if (cls && cls !== "br") span.className = cls;
     span.textContent = text;
     item.appendChild(span);
   });
   parent.appendChild(item);
+}
+
+// 来源：http(s) 开头的做成新页面打开的超链接，其余只显示文字
+function makeSourceNode(src) {
+  const text = String(src).trim();
+  if (/^https?:\/\//i.test(text)) {
+    const a = document.createElement("a");
+    a.href = text;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    try {
+      const u = new URL(text);
+      a.textContent = u.hostname.replace(/^www\./, "") + (u.pathname.length > 1 ? " · " + decodeURIComponent(u.pathname).slice(0, 40) : "");
+    } catch (e) {
+      a.textContent = text;
+    }
+    a.title = text;
+    return a;
+  }
+  return document.createTextNode(text);
+}
+
+// ---------- 原文展示 + 矛盾语句高亮 ----------
+function bigrams(t) {
+  const s = t.replace(/[\s，。,.！!？?、；;：:“”"'（）()]/g, "");
+  const out = new Set();
+  for (let i = 0; i < s.length - 1; i++) out.add(s.slice(i, i + 2));
+  return out;
+}
+
+function findHighlightRanges(text, data) {
+  const auth = data.authority || {};
+  const det = data.detection || {};
+  const bad = (auth.results || []).filter((r) => r.judgement === "矛盾");
+  const ranges = [];
+  const add = (a, b) => { if (b > a) ranges.push([a, b]); };
+
+  const exact = (frag) => {
+    frag = (frag || "").trim();
+    if (frag.length < 4) return false;
+    const i = text.indexOf(frag);
+    if (i < 0) return false;
+    add(i, i + frag.length);
+    return true;
+  };
+
+  // 句子切分（保留位置）
+  const sents = [];
+  const re = /[^。！？!?；;，,\n]+[。！？!?；;，,\n]*/g;
+  let m;
+  while ((m = re.exec(text))) sents.push([m.index, m.index + m[0].length, m[0]]);
+
+  bad.forEach((r) => {
+    const claim = r.claim || "";
+    if (exact(claim)) return;
+    let hit = false;
+    claim.split(/[，。,.；;、\s]+/).forEach((c) => { if (exact(c)) hit = true; });
+    if (hit) return;
+    // 说法是转述：选与说法重合最多的那一句
+    const cb = bigrams(claim);
+    if (!cb.size) return;
+    let best = null, bestScore = 0;
+    sents.forEach((s) => {
+      const sb = bigrams(s[2]);
+      let n = 0;
+      cb.forEach((g) => { if (sb.has(g)) n++; });
+      const score = n / cb.size;
+      if (score > bestScore) { bestScore = score; best = s; }
+    });
+    if (best && bestScore >= 0.3) add(best[0], best[1]);
+  });
+
+  // 兜底：有矛盾但没定位到，用识别出的骗人手法里的原文引用
+  if (bad.length && !ranges.length) {
+    (det.tactics || []).forEach((t) => exact(t.evidence));
+  }
+
+  ranges.sort((a, b) => a[0] - b[0]);
+  const merged = [];
+  ranges.forEach((r) => {
+    const last = merged[merged.length - 1];
+    if (last && r[0] <= last[1]) last[1] = Math.max(last[1], r[1]);
+    else merged.push(r.slice());
+  });
+  return merged;
+}
+
+function renderOriginal(data) {
+  const isImage = data.input && data.input.input_type === "image";
+  const text = (data.input && data.input.text) || "";
+  $("orig-title").firstChild.textContent = isImage ? "从图片里认出的文字" : "您输入的内容";
+  const box = $("orig-text");
+  box.replaceChildren();
+  if (!text) {
+    box.textContent = "（没有内容）";
+    return;
+  }
+  let pos = 0;
+  const ranges = findHighlightRanges(text, data);
+  ranges.forEach(([a, b]) => {
+    if (a > pos) box.append(text.slice(pos, a));
+    const mk = document.createElement("mark");
+    mk.textContent = text.slice(a, b);
+    box.appendChild(mk);
+    pos = b;
+  });
+  if (pos < text.length) box.append(text.slice(pos));
+  document.querySelector(".orig-legend").hidden = !ranges.length;
+}
+
+// ---------- 诈骗概率 ----------
+function estimateProb(det) {
+  const table = {
+    诈骗: { 高: 92, 中: 80, 低: 68 },
+    存疑: { 高: 62, 中: 50, 低: 38 },
+    正常: { 高: 20, 中: 12, 低: 5 },
+  };
+  return (table[det.verdict] || table["存疑"])[det.risk_level] ?? 50;
+}
+function renderProb(det, cls) {
+  const raw = Number(det.scam_probability);
+  const pct = Number.isFinite(raw) && det.scam_probability !== null && det.scam_probability !== "" ? Math.max(0, Math.min(100, Math.round(raw))) : estimateProb(det);
+  $("v-ring").className = "v-ring " + cls;
+  $("prob-num").textContent = pct + "%";
+  $("ring").style.setProperty("--p", pct);
+  $("ring").setAttribute("aria-label", `诈骗概率 ${pct}%`);
 }
 
 function render(data) {
@@ -552,6 +706,7 @@ function render(data) {
   $("verdict").className = "verdict " + cls;
   $("verdict-title").textContent = adv.headline || fallback;
   $("risk").textContent = `风险等级：${det.risk_level || "未知"}`;
+  renderProb(det, cls);
 
   const tips = $("tips");
   tips.replaceChildren();
@@ -575,8 +730,31 @@ function render(data) {
   list.replaceChildren();
   (auth.results || []).forEach((r) => {
     const tagCls = r.judgement === "矛盾" ? "tag bad" : r.judgement === "一致" ? "tag good" : "tag";
-    li(list, [[r.judgement, tagCls], [r.claim], [r.basis ? `依据：${r.basis}` : "", "br"], [r.source ? `来源：${r.source}` : "", "src"]]);
+    li(list, [[r.judgement, tagCls], [r.claim, r.judgement === "矛盾" ? "claim hl" : "claim"], [r.basis ? `依据：${r.basis}` : "", "basis"]]);
+    if (r.source) {
+      const item = list.lastChild;
+      const row = document.createElement("div");
+      row.className = "src";
+      row.append("来源：");
+      row.appendChild(makeSourceNode(r.source));
+      item.appendChild(row);
+    }
   });
+  if (!(auth.results || []).length) li(list, [["暂时没有可对照的官方说法"]]);
+
+  renderOriginal(data);
+
+  const evList = $("evidence");
+  evList.replaceChildren();
+  const seen = new Set();
+  (auth.evidence || []).forEach((e) => {
+    if (!e.source || seen.has(e.source)) return;
+    seen.add(e.source);
+    const item = document.createElement("li");
+    item.appendChild(makeSourceNode(e.source));
+    evList.appendChild(item);
+  });
+  $("evidence-wrap").hidden = !seen.size;
 
   const isImage = data.input && data.input.input_type === "image";
   $("ocr-block").hidden = !isImage;
@@ -607,3 +785,103 @@ window.addEventListener("beforeunload", () => {
 });
 
 updateControls();
+
+// ---------- 界面增强：字号、语音引导、示例、清空、听结果 ----------
+(function () {
+  const root = document.documentElement;
+  let size = parseInt(localStorage.getItem("sg-font") || "20", 10);
+  const applySize = () => { size = Math.min(26, Math.max(16, size)); root.style.fontSize = size + "px"; localStorage.setItem("sg-font", size); };
+  applySize();
+  $("font-up").addEventListener("click", () => { size += 2; applySize(); });
+  $("font-down").addEventListener("click", () => { size -= 2; applySize(); });
+
+  $("voice-guide").addEventListener("click", sayRandomLine);
+
+  document.querySelectorAll(".chip").forEach((c) =>
+    c.addEventListener("click", () => {
+      selectTab($("tab-text"));
+      const t = $("text");
+      t.value = c.dataset.sample;
+      $("count").textContent = t.value.length;
+      t.focus();
+    })
+  );
+
+  $("clear").addEventListener("click", () => {
+    $("text").value = "";
+    $("count").textContent = "0";
+    $("image").value = "";
+    $("preview").hidden = true;
+    $("error").textContent = "";
+  });
+
+  $("listen-result").addEventListener("click", () => { if (resultScript) speakResult(); });
+  $("back-top").addEventListener("click", () => $("back-home").click());
+})();
+
+
+// ---------- 常见骗局：点开看典型案例 ----------
+const SCAM_CASES = {
+  kefu: {
+    title: "冒充客服",
+    cases: [
+      ["“退款理赔”变转账", "接到自称电商平台客服的电话，说您买的商品有质量问题要赔偿，让您下载“屏幕共享”软件、报出短信验证码。对方趁机操作手机，把银行卡里的钱转走。"],
+      ["“关闭会员自动扣费”", "自称平台客服，说您的会员每月自动扣费，要帮您关闭，并让您按“指引”给所谓的“安全账户”转账来验证。其实根本没有什么自动扣费。"],
+    ],
+    tip: "正规客服不会要求您共享屏幕、报验证码或转账。遇到这类电话，先挂断，再通过官方 App 或官网上的电话核实。",
+  },
+  touzi: {
+    title: "养老投资",
+    cases: [
+      ["“以房养老”“养老项目”高返利", "宣称投入养老项目，每月返利 8% 到 10%，还送旅游、送礼品。前几个月真的返钱，等投入大笔资金，平台就无法提现、人去楼空。"],
+      ["拉进群里的“投资老师”", "被拉进股票或理财群，群里“老师”天天晒收益，诱导下载指定 App 充值。App 里显示盈利，却提不出来，说要先交“保证金”“税费”。"],
+    ],
+    tip: "保本又高收益的项目基本都是骗局。投钱之前，先和子女商量，并到金融监管部门官网核对机构资质。",
+  },
+  baojian: {
+    title: "虚假保健品",
+    cases: [
+      ["免费讲座、送鸡蛋送礼品", "以免费体检、听讲座送礼品为名吸引老人，讲座上“专家”吹嘘产品能治糖尿病、高血压，现场限时抢购，一盒几千元，实际成本很低。"],
+      ["直播间“名医”“义诊”", "直播间里有人冒充名医，声称某产品能“根治”“逆转”慢性病，催您马上下单。收到的货往往是三无产品，没有任何疗效。"],
+    ],
+    tip: "保健品不能代替药品，也不可能“包治百病”。真有不舒服，请去正规医院，买药看国家药监局的批准文号。",
+  },
+};
+
+(function () {
+  const dlg = $("case-dialog");
+  const body = $("case-body");
+  let opener = null;
+  function open(key, btn) {
+    const d = SCAM_CASES[key];
+    if (!d) return;
+    opener = btn;
+    $("case-title").textContent = d.title + " · 典型案例";
+    body.replaceChildren();
+    d.cases.forEach(([t, txt], i) => {
+      const card = document.createElement("div");
+      card.className = "case-item";
+      const h = document.createElement("h3");
+      h.textContent = `案例 ${i + 1}：${t}`;
+      const p = document.createElement("p");
+      p.textContent = txt;
+      card.append(h, p);
+      body.appendChild(card);
+    });
+    const tip = document.createElement("div");
+    tip.className = "case-tip";
+    tip.textContent = "怎么防：" + d.tip;
+    body.appendChild(tip);
+    if (dlg.showModal) dlg.showModal();
+    else dlg.setAttribute("open", "");
+  }
+  function close() {
+    if (dlg.close) dlg.close();
+    else dlg.removeAttribute("open");
+    if (opener) opener.focus();
+  }
+  document.querySelectorAll(".scam-card").forEach((b) => b.addEventListener("click", () => open(b.dataset.scam, b)));
+  $("case-close").addEventListener("click", close);
+  $("case-ok").addEventListener("click", close);
+  dlg.addEventListener("click", (e) => { if (e.target === dlg) close(); }); // 点遮罩关闭
+})();

@@ -1,0 +1,76 @@
+{
+  "summary": {
+    "诈骗召回率(判为诈骗)": "2/2 = 100%",
+    "诈骗预警率(诈骗+存疑)": "2/2 = 100%",
+    "诈骗精确率": "2/2 = 100%",
+    "误伤率(正常被判诈骗)": "0/1 = 0%",
+    "正常样本被标存疑": "0/1 = 0%",
+    "权威对照·诈骗样本判矛盾": "2/2 = 100%",
+    "权威对照·正常样本未判矛盾": "1/1 = 100%",
+    "转人工复核比例(全部)": "0/3 = 0%"
+  },
+  "rows": [
+    {
+      "id": "S04",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "伪权威",
+        "虚假疗效",
+        "恐惧营销",
+        "限时逼单"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "无法判定",
+        "矛盾",
+        "矛盾",
+        "无法判定"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "以院士名义包装、宣称根治多种慢病并可停药，并要求先付款，是典型的保健品类诈骗与伪健康误导。"
+    },
+    {
+      "id": "S12",
+      "label": "scam",
+      "category": "保健品",
+      "verdict": "诈骗",
+      "risk_level": "高",
+      "tactics": [
+        "虚假疗效",
+        "情感绑架",
+        "伪权威",
+        "恐惧营销"
+      ],
+      "authority_overall": "与官方信息矛盾",
+      "judgements": [
+        "矛盾",
+        "矛盾",
+        "矛盾",
+        "矛盾"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "典型的「免费礼品引流＋讲座洗脑＋专家背书＋夸大疗效＋亲情施压」保健品套路，建议老人只领礼品不买货，或直接不参加。"
+    },
+    {
+      "id": "N01",
+      "label": "normal",
+      "category": "健康科普",
+      "verdict": "正常",
+      "risk_level": "低",
+      "tactics": [],
+      "authority_overall": "与官方信息一致",
+      "judgements": [
+        "一致",
+        "一致"
+      ],
+      "needs_human_review": false,
+      "review_reasons": [],
+      "reason": "内容为常规高血压用药与饮食科普，强调遵医嘱、无推销无夸大疗效，未见诈骗手法。"
+    }
+  ]
+}

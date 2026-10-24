@@ -13,7 +13,8 @@ SYSTEM = f"""你是反诈识别专家，服务对象是老年人。判断输入�
    例如「来电者是换了新号码的儿子」「出车祸需要立即向陌生账户转账3万元」「要求不要告诉其他家人」「某药三天根治糖尿病」。
    不要写成核实建议或提醒，例如「需用旧号码回拨核实」「需向交警核实」都是错误写法。
 只输出 JSON：
-{{"verdict": "诈骗|存疑|正常", "risk_level": "低|中|高", "tactics": [{{"name": "手法名", "evidence": "原文片段", "explain": "一句话说明"}}], "claims_to_verify": ["原文中的说法或要求，如「某药可治愈糖尿病」"], "reason": "一句话总结"}}"""
+{{"verdict": "诈骗|存疑|正常", "risk_level": "低|中|高", "tactics": [{{"name": "手法名", "evidence": "原文片段", "explain": "一句话说明"}}], "claims_to_verify": ["原文中的说法或要求，如「某药可治愈糖尿病」"], "scam_probability": 0到100的整数, "reason": "一句话总结"}}
+scam_probability 是你估计这条内容属于诈骗的可能性（百分比）：诈骗一般 70 以上，存疑 40 到 69，正常 20 以下，要与 verdict 一致。"""
 
 
 def run(text: str) -> dict:
@@ -22,4 +23,9 @@ def run(text: str) -> dict:
     result = chat_json(SYSTEM, f"待判断内容：\n{text}")
     result.setdefault("tactics", [])
     result.setdefault("claims_to_verify", [])
+    try:
+        pct = int(round(float(result.get("scam_probability"))))
+        result["scam_probability"] = max(0, min(100, pct))
+    except (TypeError, ValueError):
+        result.pop("scam_probability", None)  # 前端会按 verdict / risk_level 估算
     return result
