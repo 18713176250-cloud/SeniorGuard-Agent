@@ -519,3 +519,72 @@ button.scam-card:hover { background: #eaf5ef; border-color: #b9d8c8; transform: 
 .ev-wrap summary small { font-weight: 500; font-size: .8rem; color: var(--muted); }
 .ev-wrap summary .arrow { margin: 0 0 0 auto; width: 1em; height: 1em; transform: rotate(90deg); }
 .ev-wrap[open] summary .arrow { transform: rotate(-90deg); }
+
+/* ========== 字体层级规范（统一覆盖，最高优先级） ========== */
+/* 字体回退：苹方 → 微软雅黑 → 系统无衬线；--scale 支持 100%/112.5%/125% 整体缩放 */
+:root {
+  --scale: 1;
+  --ff: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+  --fs-heading: calc(40px * var(--scale));
+  --fs-title: calc(24px * var(--scale));
+  --fs-subtitle: calc(20px * var(--scale));
+  --fs-content: calc(18px * var(--scale));
+  --fs-label: calc(18px * var(--scale));
+  --fs-button: calc(18px * var(--scale));
+  --fs-caption: calc(14px * var(--scale));
+  --lh-tight: 1.4;
+  --lh-normal: 1.5;
+  --lh-loose: 1.8;
+  --lh-caption: 1.6;
+}
+@media (max-width: 720px) {
+  :root { --fs-heading: calc(30px * var(--scale)); --fs-title: calc(22px * var(--scale)); }
+}
+
+/* 全站统一字体系列：不混用宋体/楷体/书法体 */
+body, button, input, textarea, select, summary, .brand-name, .brand-en,
+.auth-list .basis { font-family: var(--ff) !important; }
+
+/* Heading：页面主标题（电脑 40 / 手机 30，700，1.4） */
+.hero h1, .result-title, .verdict h2, .case-head h2 {
+  font-size: var(--fs-heading) !important; font-weight: 700 !important; line-height: var(--lh-tight) !important;
+}
+
+/* Title：模块标题（电脑 24 / 手机 22，600，1.4） */
+h3, .sec-title, summary, .intro h2, .ev-title {
+  font-size: var(--fs-title) !important; font-weight: 600 !important; line-height: var(--lh-tight) !important;
+}
+
+/* Subtitle：卡片标题（20，600，1.5） */
+.verdict p, #risk, .ring-label, .scam-card b, .auth-list .claim, .orig-title,
+.brand-name, .overlay-card p {
+  font-size: var(--fs-subtitle) !important; font-weight: 600 !important; line-height: var(--lh-normal) !important;
+}
+
+/* Content：正文 / 风险解释 / 资料 / 应对建议（18，400，1.8） */
+body { font-size: var(--fs-content) !important; line-height: var(--lh-loose) !important; font-weight: 400 !important; }
+.script, .list li, .tips li, pre, .orig-text, .case-item p, .review, .auth-overall,
+.case-tip, .scam-card p {
+  font-size: var(--fs-content) !important; font-weight: 400 !important; line-height: var(--lh-loose) !important;
+}
+
+/* Label：输入标签 / 标签页（18，600，1.5） */
+label, .tabs button, .check {
+  font-size: var(--fs-label) !important; font-weight: 600 !important; line-height: var(--lh-normal) !important;
+}
+
+/* Button：按钮文字（18，600，1.5） */
+button.primary, button.secondary, .flex-btn, .listen, .back-link, .voice-btn, .chip {
+  font-size: var(--fs-button) !important; font-weight: 600 !important; line-height: var(--lh-normal) !important;
+}
+
+/* Caption：字数统计 / 补充说明 / 页脚（14，400，1.6） */
+.hint, .disclaimer, .hero p, .intro p, .avatar-status, .list .src, .auth-list .src,
+.ev-list li, .foot, .brand-en, .prob-note, .case-note, .sec-sub, .orig-legend,
+.src-t small, .overlay-hint {
+  font-size: var(--fs-caption) !important; font-weight: 400 !important; line-height: var(--lh-caption) !important;
+}
+
+/* 去掉 SDK 内部元素自带的边框 / 阴影 */
+#agent-avatar, #agent-avatar * { box-shadow: none !important; border: 0 !important; outline: 0 !important; filter: none !important; }
+.avatar-stage { box-shadow: none !important; }

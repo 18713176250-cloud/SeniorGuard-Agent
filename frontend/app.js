@@ -789,11 +789,18 @@ updateControls();
 // ---------- 界面增强：字号、语音引导、示例、清空、听结果 ----------
 (function () {
   const root = document.documentElement;
-  let size = parseInt(localStorage.getItem("sg-font") || "20", 10);
-  const applySize = () => { size = Math.min(26, Math.max(16, size)); root.style.fontSize = size + "px"; localStorage.setItem("sg-font", size); };
-  applySize();
-  $("font-up").addEventListener("click", () => { size += 2; applySize(); });
-  $("font-down").addEventListener("click", () => { size -= 2; applySize(); });
+  const SCALES = [1, 1.125, 1.25]; // 100% → 112.5% → 125%
+  let idx = 0;
+  const saved = localStorage.getItem("sg-scale-idx");
+  if (saved !== null) idx = parseInt(saved, 10);
+  const apply = () => {
+    idx = Math.min(SCALES.length - 1, Math.max(0, idx));
+    root.style.setProperty("--scale", SCALES[idx]);
+    localStorage.setItem("sg-scale-idx", idx);
+  };
+  apply();
+  $("font-up").addEventListener("click", () => { idx++; apply(); });
+  $("font-down").addEventListener("click", () => { idx--; apply(); });
 
   $("voice-guide").addEventListener("click", sayRandomLine);
 
