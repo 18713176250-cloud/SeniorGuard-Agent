@@ -69,6 +69,7 @@ const XINGYUN_SDK = "https://media.xingyun3d.com/xingyun3d/general/litesdk/xmovA
 let avatarCfg = null;
 let agent = null;
 let agentReady = null;
+let agentLoaded = false; // 数字人首帧出来后为 true，之后忽略迟到的下载进度回调
 
 const cfgReady = fetch((window.API_BASE || "") + "/api/avatar-config")
   .then((r) => r.json())
@@ -137,16 +138,19 @@ function initAgent() {
     });
     await agent.init({
       onDownloadProgress(p) {
+        if (agentLoaded) return;
         const msg = `数字人正在准备 ${Number(p).toFixed(0)}%`;
         setAvatarStatus(msg);
       },
     });
     await waitFirstFrame();
+    agentLoaded = true;
     $("avatar-placeholder").hidden = true;
     setAvatarStatus("");
   })();
   agentReady.catch(() => {
     agentReady = null;
+    agentLoaded = false;
     if (agent) {
       Promise.resolve().then(() => agent.destroy("init_failed")).catch(() => {});
       agent = null;
@@ -165,6 +169,52 @@ const player = {
   timer: null,
   onDone: null,
 };
+
+// ---------- 讲话进度条 ----------
+// SDK 拿不到音频总时长，这里按字数估算：每讲完一句用真实耗时校准语速，句内按时间平滑推进。
+const prog = { total: 0, done: 0, len: 0, t0: null, pausedAt: 0, speed: 4.2, raf: 0 };
+
+function fmtTime(sec) {
+  sec = Math.max(0, Math.round(sec));
+  return Math.floor(sec / 60) + ":" + String(sec % 60).padStart(2, "0");
+}
+
+function progressNow() {
+  let cur = 0;
+  if (prog.t0 !== null) {
+    const el = performance.now() - prog.t0;
+    cur = Math.min((el / 1000) * prog.speed, prog.len * 0.97);
+  }
+  return Math.min(prog.done + cur, prog.total);
+}
+
+function renderProgress() {
+  const box = $("speech-progress");
+  if (box.hidden || !prog.total) return;
+  const chars = progressNow();
+  const pct = Math.round((chars / prog.total) * 100);
+  $("sp-fill").style.width = pct + "%";
+  document.querySelector("#speech-progress .sp-bar").setAttribute("aria-valuenow", pct);
+  $("sp-time").textContent = fmtTime(chars / prog.speed) + " / " + fmtTime(prog.total / prog.speed);
+}
+
+function progressLoop() {
+  renderProgress();
+  prog.raf = player.state === "playing" ? requestAnimationFrame(progressLoop) : 0;
+}
+
+function progressStart(chunks) {
+  prog.total = chunks.join("").length;
+  prog.done = 0; prog.len = 0; prog.t0 = null;
+  $("speech-progress").hidden = !prog.total;
+  renderProgress();
+}
+
+function progressHide() {
+  cancelAnimationFrame(prog.raf);
+  prog.raf = 0; prog.t0 = null; prog.total = 0;
+  $("speech-progress").hidden = true;
+}
 
 function splitChunks(text) {
   const parts = text.match(/[^。！？!?；;\n]+[。！？!?；;]*/g) || [];
@@ -196,6 +246,7 @@ function speakCurrentChunk() {
   if (player.idx >= player.chunks.length) return finishPlayer();
   const chunk = player.chunks[player.idx];
   player.started = false;
+  prog.len = chunk.length; prog.t0 = null;
   agent.speak(chunk, true, true);
   // 兜底：万一没收到 end 回调，按字数估算时长后自动讲下一句，避免卡住
   player.timer = setTimeout(() => {
@@ -205,12 +256,25 @@ function speakCurrentChunk() {
 }
 
 function onChunkStart() {
-  if (player.state === "playing") player.started = true;
+  if (player.state !== "playing") return;
+  player.started = true;
+  prog.t0 = performance.now();
+  if (!prog.raf) progressLoop();
 }
 
 function onChunkEnd(fromTimer) {
   if (player.state !== "playing") return;
   if (!player.started && !fromTimer) return; // 被打断那段的迟到回调
+  if (!fromTimer && prog.t0 !== null) {
+    const sec = (performance.now() - prog.t0) / 1000;
+    const cur = player.chunks[player.idx] || "";
+    if (sec > 0.5 && cur) {
+      const v = cur.length / sec;
+      if (v > 1.5 && v < 12) prog.speed = prog.speed * 0.4 + v * 0.6;
+    }
+  }
+  prog.done += (player.chunks[player.idx] || "").length;
+  prog.t0 = null; prog.len = 0;
   player.idx += 1;
   speakCurrentChunk();
 }
@@ -218,6 +282,8 @@ function onChunkEnd(fromTimer) {
 function finishPlayer() {
   clearChunkTimer();
   player.state = "idle";
+  prog.done = prog.total; prog.t0 = null; renderProgress();
+  setTimeout(() => { if (player.state === "idle") progressHide(); }, 1200);
   updateControls();
   const done = player.onDone;
   player.onDone = null;
@@ -230,6 +296,7 @@ function stopPlayer() {
   player.state = "idle";
   player.chunks = [];
   player.onDone = null;
+  progressHide();
   updateControls();
 }
 
@@ -240,6 +307,7 @@ function avatarSay(text, statusMsg, onDone) {
   player.idx = 0;
   player.state = "playing";
   player.onDone = onDone || null;
+  progressStart(player.chunks);
   setAvatarStatus(statusMsg || "数字人正在讲");
   updateControls();
   speakCurrentChunk();
@@ -250,6 +318,9 @@ function pausePlayer() {
   clearChunkTimer();
   player.state = "paused";
   player.started = false;
+  cancelAnimationFrame(prog.raf); prog.raf = 0;
+  prog.t0 = null; // 继续时这一句从头重讲，进度回到句首
+  renderProgress();
   interruptAgent();
   setAvatarStatus("已暂停，点 ▶ 接着讲");
   updateControls();
@@ -270,6 +341,7 @@ async function say(text, statusMsg, onDone) {
   await cfgReady;
   if (avatarCfg) {
     try {
+      if (!agentLoaded) setAvatarStatus("数字人还在准备，好了马上给您讲……");
       await initAgent();
       fallbackActive = false;
       avatarSay(text, statusMsg, onDone);
@@ -303,7 +375,6 @@ function updateControls() {
   toggle.setAttribute("aria-label", paused ? "继续播报" : "暂停播报");
 
   $("replay-avatar").hidden = !(view === "result" && resultScript);
-  $("speak").hidden = !(view === "result" && resultScript && avatarCfg);
   const sayBtn = $("say-line");
   sayBtn.hidden = view === "result";
   sayBtn.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-sound"/></svg> ' + (view === "waiting" ? "听一句防骗提醒" : "听我说一句");
@@ -325,11 +396,6 @@ $("toggle-play").addEventListener("click", () => {
 // 重新讲：从头播报结果
 $("replay-avatar").addEventListener("click", () => {
   if (resultScript) speakResult();
-});
-
-$("speak").addEventListener("click", () => {
-  stopPlayer();
-  speakAudio(resultScript);
 });
 
 // 首页 / 等待页：随机听一句
@@ -363,10 +429,6 @@ async function speakAudio(text) {
   if (!text) return;
   stopAudio();
   fallbackActive = true;
-  const btn = $("speak");
-  btn.disabled = true;
-  const oldText = btn.textContent;
-  btn.textContent = "准备中……";
   try {
     const resp = await fetch((window.API_BASE || "") + "/api/tts", {
       method: "POST",
@@ -390,8 +452,6 @@ async function speakAudio(text) {
       setAvatarStatus("语音暂时不可用");
     }
   } finally {
-    btn.disabled = false;
-    btn.textContent = oldText;
     updateControls();
   }
 }
@@ -421,6 +481,7 @@ function hideOverlay() {
 function setView(v) {
   view = v;
   $("view-input").hidden = v === "result";
+  $("home-src").hidden = v === "result";
   $("view-result").hidden = v !== "result";
   updateControls();
 }
@@ -458,9 +519,17 @@ $("image").addEventListener("change", (e) => {
     img.src = URL.createObjectURL(file);
     img.hidden = false;
   } else {
+    img.removeAttribute("src");
     img.hidden = true;
   }
+  setFileUi(file);
 });
+
+function setFileUi(file) {
+  $("file-name").textContent = file ? file.name : "还没有选择图片";
+  $("file-name").classList.toggle("has-file", !!file);
+  $("file-btn-text").textContent = file ? "重新选择" : "选择图片";
+}
 
 // ---------- 核查请求：超时自动取消，遮罩上显示已等待时间 ----------
 // 3 分钟；勾选「联网查」时更慢，放宽到 5 分钟。后端单次模型调用超时 120s、最多试 2 次。
@@ -775,6 +844,7 @@ $("back-home").addEventListener("click", () => {
   if ($("preview").src) URL.revokeObjectURL($("preview").src);
   $("preview").removeAttribute("src");
   $("preview").hidden = true;
+  setFileUi(null);
   $("live").checked = false;
   $("error").textContent = "";
   setView("home");
@@ -783,6 +853,9 @@ $("back-home").addEventListener("click", () => {
 window.addEventListener("beforeunload", () => {
   if (agent) Promise.resolve().then(() => agent.destroy("page_unload")).catch(() => {});
 });
+
+// 页面一打开就在后台加载数字人，不用等用户点击；失败时静默，之后点按钮会自动重试
+cfgReady.then(() => { if (avatarCfg) initAgent().catch(() => {}); });
 
 updateControls();
 
@@ -819,6 +892,7 @@ updateControls();
     $("count").textContent = "0";
     $("image").value = "";
     $("preview").hidden = true;
+    setFileUi(null);
     $("error").textContent = "";
   });
 

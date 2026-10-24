@@ -589,3 +589,113 @@ button.primary, button.secondary, .flex-btn, .listen, .back-link, .voice-btn, .c
 /* 去掉 SDK 内部元素自带的边框 / 阴影 */
 #agent-avatar, #agent-avatar * { box-shadow: none !important; border: 0 !important; outline: 0 !important; filter: none !important; }
 .avatar-stage { box-shadow: none !important; }
+
+/* 主页空白处的插画：占满表单下方剩余空间，放不下时自动收起 */
+#view-input .input-top { display: flex; flex-direction: column; }
+#view-input .input-top > .hero, #view-input .input-top > form { flex: none; }
+.home-banner { flex: 1 1 0; min-height: 0; margin-top: .5rem; border-radius: var(--radius); overflow: hidden; background: #e8f2ec; }
+.home-banner img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 70%; }
+@media (max-width: 720px) { .home-banner { flex: none; height: 160px; } }
+#view-input .input-top > .home-src { flex: none; }
+
+/* 图片核查：自定义选择文件按钮 */
+.filepick { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; padding: .9rem 1rem; border: 2px dashed #9cc4b0; border-radius: 12px; background: #f6faf7; }
+.file-native { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; pointer-events: none; }
+.filepick .file-btn { display: inline-flex; align-items: center; gap: .4rem; margin: 0; min-height: 48px; padding: 0 1.2rem; border-radius: 10px; background: var(--primary); color: #fff; cursor: pointer; white-space: nowrap; box-shadow: var(--shadow); transition: filter .15s; }
+.filepick .file-btn:hover { filter: brightness(1.08); }
+.filepick .file-native:focus-visible + .file-btn { outline: 3px solid #f5a623; outline-offset: 2px; }
+.filepick .file-name { flex: 1; min-width: 0; color: var(--muted); word-break: break-all; }
+.filepick .file-name.has-file { color: var(--text); font-weight: 600; }
+.filepick .file-btn .ic { width: 1.2em; height: 1.2em; }
+#preview:not([src]) { display: none !important; }
+
+/* 文字 / 图片核查：加大元素与文字之间的间距 */
+#view-input .hero p { margin-top: .4rem; }
+#view-input form { padding: 1.1rem 1.3rem 1.2rem; }
+#view-input .tabs { margin-bottom: 1rem; }
+#view-input .tabs button { min-height: 48px; padding: .4rem .8rem; }
+#view-input label { margin-bottom: .6rem; }
+#view-input textarea { height: 6.2rem; padding: .7rem .9rem; }
+#view-input .hint { margin-top: .4rem; }
+#view-input .chips { margin-top: 1rem; gap: .7rem; }
+#view-input .chip { min-height: 40px; padding: .25rem 1rem; }
+#view-input .check { margin: 1.1rem 0 1rem; gap: .7rem; }
+#view-input .actions { gap: .9rem; margin-top: .4rem; }
+#view-input .error { margin: .6rem 0 0; }
+#view-input .filepick { gap: 1rem; padding: 1.1rem 1.2rem; }
+#view-input #preview { margin-top: 1rem; }
+#view-input .home-src { margin-top: 1rem; padding: .9rem 1.1rem; }
+#view-input .home-src .sec-title { margin-bottom: .8rem; }
+#view-input .home-src .hotline { margin-top: .8rem; }
+
+#view-input .hero p { margin-top: 0; }
+
+/* 插画完整显示：按原图比例缩放，不再裁切 */
+.home-banner { flex: none !important; height: auto !important; }
+.home-banner img { width: 100%; height: auto !important; object-fit: contain; }
+
+/* 官方查询入口：放在数字人下方（左列） */
+.left-col { flex: 0 0 34%; display: flex; flex-direction: column; gap: .6rem; min-height: 0; min-width: 0; }
+.left-col .left-panel { flex: 1 1 0; min-height: 0; }
+.left-col .home-src { flex: none; margin: 0; padding: .7rem .8rem; max-height: 46%; overflow-y: auto; }
+.left-col .home-src .sec-title { margin: 0 0 .5rem; }
+.left-col .src-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem; }
+.left-col .src-card { min-height: 64px; }
+.left-col .home-src .hotline { margin-top: .6rem; }
+.left-col .home-src[hidden] { display: none; }
+@media (max-width: 720px) { .left-col { flex: 0 0 auto; } .left-col .left-panel { flex: 0 0 auto; } .left-col .home-src { max-height: none; } }
+
+/* 官方查询入口：整页最下方，横向通栏，不分左右 */
+.layout > .left-panel { flex: 0 0 34%; }
+#home-src { flex: none; margin: 0 .6rem .4rem; padding: .6rem 1rem; background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); }
+#home-src[hidden] { display: none; }
+#home-src .sec-title { margin: 0 0 .5rem; }
+#home-src .src-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .6rem; }
+#home-src .src-card { min-height: 64px; }
+#home-src .hotline { margin: .5rem 0 0; }
+@media (max-width: 900px) { #home-src .src-grid { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); } }
+
+/* ===== 整页滚动：不再固定高度，也不再只滚右侧 ===== */
+html, body { height: auto; min-height: 100%; }
+body { overflow: visible; }
+main { flex: none; overflow: visible; }
+.layout { height: auto; align-items: flex-start; }
+.content { min-height: 0; }
+.view { height: auto; }
+#view-input, #view-input .input-top { overflow: visible; }
+#view-input .input-top { flex: none; }
+.right-panel { height: auto; overflow: visible; }
+/* 数字人跟随页面停在左侧，右边内容随整页滚动 */
+.layout > .left-panel { position: sticky; top: .5rem; flex: 0 0 34%; height: calc(100vh - 5.5rem); min-height: 480px; }
+#home-src { margin-top: .6rem; }
+@media (max-width: 720px) {
+  .layout > .left-panel { position: relative; top: auto; height: auto; min-height: 70vh; flex: 0 0 auto; }
+}
+
+/* 插画贴在右列最下面：右列至少撑满一屏，插画用 auto 外边距推到底 */
+.layout > .content { align-self: stretch; min-height: calc(100vh - 5.5rem); display: flex; flex-direction: column; }
+#view-input { flex: 1 1 auto; min-height: 0; }
+#view-input .input-top { flex: 1 1 auto !important; display: flex; flex-direction: column; }
+#view-input .home-banner { margin-top: auto; padding-top: .8rem; background: none; }
+
+/* 文字核查 / 图片核查：上传内容区域尺寸一致 */
+#panel-text, #panel-image { height: 15rem; display: flex; flex-direction: column; }
+#panel-text[hidden], #panel-image[hidden] { display: none; }
+#panel-text .textwrap { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+#panel-text textarea { flex: 1 1 auto; height: auto; min-height: 0; resize: none; }
+#panel-image .filepick { flex: 1 1 auto; min-height: 0; align-content: center; }
+#panel-image #preview { flex: none; width: 100%; max-height: 6.5rem; object-fit: contain; margin-top: .6rem; }
+#panel-image .filepick:has(~ #preview[src]) { flex: none; }
+
+/* 数字人加载后 SDK 的 canvas 会盖住按钮：把画面压到下层，控件和文字抬到上层 */
+.left-panel .avatar-stage { z-index: 0; }
+.left-panel .avatar-bottom { z-index: 20; pointer-events: none; }
+.left-panel .avatar-bottom .avatar-controls, .left-panel .avatar-bottom audio { pointer-events: auto; position: relative; z-index: 21; }
+.left-panel .intro { z-index: 20; }
+
+/* 数字人讲话进度条 */
+.speech-progress { width: 100%; display: flex; align-items: center; gap: .6rem; padding: 0 .2rem; }
+.speech-progress[hidden] { display: none; }
+.sp-bar { flex: 1; height: 8px; border-radius: 999px; background: rgba(255,255,255,.35); overflow: hidden; }
+.sp-fill { height: 100%; width: 0; border-radius: 999px; background: #fff; transition: width .25s linear; }
+.sp-time { flex: none; color: #fff; font-size: .8rem !important; text-shadow: 0 1px 3px rgba(0,0,0,.6); font-variant-numeric: tabular-nums; }
