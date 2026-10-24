@@ -520,7 +520,6 @@ button.scam-card:hover { background: #eaf5ef; border-color: #b9d8c8; transform: 
 .ev-wrap summary .arrow { margin: 0 0 0 auto; width: 1em; height: 1em; transform: rotate(90deg); }
 .ev-wrap[open] summary .arrow { transform: rotate(-90deg); }
 
-
 /* ========== 字体层级规范（统一覆盖，最高优先级） ========== */
 /* 字体回退：苹方 → 微软雅黑 → 系统无衬线；--scale 支持 100%/112.5%/125% 整体缩放 */
 :root {
